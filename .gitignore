@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+
+# Environments
+.env
+.venv
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+generations/
+submissions/
+*.webp
+*.png
+*.jpg
+*.jpeg
+
+# Metadata files
+*.metadata.json
+*.resolved*
