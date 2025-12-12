@@ -1,92 +1,784 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adobe Stock Dashboard</title>
     <style>
-        :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #bb86fc; --secondary: #03dac6; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid #333; margin-bottom: 20px; }
-        h1 { margin: 0; font-weight: 300; }
-        .controls { display: flex; gap: 10px; }
-        button { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .btn-primary { background: var(--accent); color: #000; }
-        .btn-secondary { background: var(--secondary); color: #000; }
-        .btn-danger { background: #cf6679; color: #fff; }
-        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: var(--card); border-radius: 12px; overflow: hidden; position: relative; border: 2px solid transparent; cursor: pointer; }
-        .card.selected { border-color: var(--accent); }
-        .card img { width: 100%; height: 180px; object-fit: cover; }
-        .card-body { padding: 12px; }
-        .card-title { font-size: 0.85rem; margin: 0 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-meta { font-size: 0.75rem; color: #888; }
-        .checkbox-overlay { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); border-radius: 50%; width: 28px; height: 28px; display: flex; justify-content: center; align-items: center; }
-        input[type="checkbox"] { transform: scale(1.3); cursor: pointer; }
-        #status { position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; background: #333; border-radius: 8px; display: none; }
-        .success { border-left: 4px solid var(--secondary); }
-        .error { border-left: 4px solid #cf6679; }
+        :root {
+            --bg: #0d0d0d;
+            --panel: #1a1a1a;
+            --card: #252525;
+            --text: #e0e0e0;
+            --accent: #bb86fc;
+            --secondary: #03dac6;
+            --danger: #cf6679;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 12px 20px;
+            background: var(--panel);
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .header-info {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .btn-secondary {
+            background: #333;
+            color: var(--text);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            overflow: hidden;
+        }
+
+        .column-header {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #888;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .column-count {
+            font-size: 0.75rem;
+            color: #555;
+        }
+
+        .column-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .column-actions button {
+            padding: 5px 10px;
+            font-size: 0.7rem;
+        }
+
+        .divider {
+            width: 1px;
+            background: #333;
+        }
+
+        .gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 6px;
+        }
+
+        .gallery::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .gallery::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 3px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.15s;
+            position: relative;
+            flex-shrink: 0;
+            min-height: 380px;
+        }
+
+        .card:hover {
+            border-color: #444;
+        }
+
+        .card.checked {
+            border-color: var(--accent);
+            background: #332244;
+        }
+
+        .card img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 10px;
+        }
+
+        .card-title {
+            font-size: 0.75rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-meta {
+            font-size: 0.65rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .card-checkbox {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 22px;
+            height: 22px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-checkbox input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .selection-column {
+            background: var(--panel);
+            border-left: 1px solid #333;
+        }
+
+        .selection-actions {
+            padding: 12px;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 8px;
+        }
+
+        .selection-actions button {
+            flex: 1;
+            padding: 12px;
+            font-size: 0.9rem;
+        }
+
+        .log-panel {
+            background: #111;
+            border-top: 1px solid #333;
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .log-header {
+            padding: 8px 16px;
+            font-size: 0.75rem;
+            color: #666;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .log-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 16px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.7rem;
+            color: #0f0;
+            white-space: pre;
+        }
+
+        .queue-badge {
+            background: #333;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: var(--secondary);
+        }
+
+        .queue-badge.running {
+            background: var(--accent);
+            color: #000;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        #lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #lightbox.active {
+            display: flex;
+        }
+
+        #lightbox img {
+            max-width: 90%;
+            max-height: 85%;
+            border-radius: 8px;
+        }
+
+        #lightbox .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 36px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #lightbox .filename {
+            position: absolute;
+            bottom: 30px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        /* Drag and Drop Styles */
+        .card.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+            cursor: grabbing;
+        }
+
+        .card[draggable="true"] {
+            cursor: grab;
+        }
+
+        .gallery.drag-over {
+            background: rgba(3, 218, 198, 0.1);
+            border: 2px dashed var(--secondary);
+            border-radius: 8px;
+        }
+
+        .drop-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: var(--secondary);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .gallery.drag-over .drop-hint {
+            opacity: 1;
+        }
+
+        .selection-column .gallery {
+            position: relative;
+            min-height: 200px;
+        }
+
+        /* Trash Drop Zone */
+        .trash-drop-zone {
+            margin-top: 12px;
+            padding: 20px;
+            border: 2px dashed #444;
+            border-radius: 8px;
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .trash-drop-zone.drag-over {
+            border-color: var(--danger);
+            background: rgba(207, 102, 121, 0.1);
+            color: var(--danger);
+        }
+
+        .trash-drop-zone .trash-icon {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+        }
+
+        /* Trash Column */
+        .trash-column {
+            width: 120px;
+            min-width: 120px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            background: var(--panel);
+            border-right: 1px solid #333;
+        }
+
+        .trash-column .trash-drop-zone {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 0;
+        }
     </style>
 </head>
+
 <body>
     <header>
         <div>
-            <h1>Adobe Stock Dashboard</h1>
-            <p style="margin:5px 0 0;color:#888;">Review and submit images</p>
+            <h1>📷 Adobe Stock Dashboard</h1>
+            <span class="header-info">Select images with checkboxes, then use action buttons</span>
         </div>
         <div class="controls">
             <button class="btn-secondary" onclick="fetchImages()">🔄 Refresh</button>
-            <button class="btn-secondary" onclick="openFolder()">📂 Open Folder</button>
-            <button class="btn-danger" onclick="deleteSelected()">🗑️ Delete</button>
-            <button class="btn-primary" onclick="createPackage()">📦 Create Package</button>
+            <button class="btn-secondary" onclick="openFolder()">📂 Folder</button>
+            <button class="btn-primary" onclick="createPackage()">📦 CSV Submission 생성</button>
         </div>
     </header>
-    <div id="gallery" class="gallery"></div>
-    <div id="status"></div>
+
+    <div class="main-container">
+        <!-- Left Column: Trash -->
+        <div class="trash-column">
+            <div class="column-header" style="justify-content:center;">
+                <span>🗑️ Trash</span>
+            </div>
+            <div class="trash-drop-zone" id="trash-drop-zone">
+                <div class="trash-icon">🗑️</div>
+                <div>Drop here<br>to delete</div>
+            </div>
+        </div>
+
+        <!-- Middle Column: Drafts -->
+        <div class="column">
+            <div class="column-header">
+                <span>🗂️ Drafts</span>
+                <div class="column-actions">
+                    <select id="sort-select" onchange="sortDrafts()"
+                        style="padding:4px 8px;font-size:0.7rem;border-radius:4px;background:#333;color:#fff;border:none;">
+                        <option value="date-desc">📅 최신순</option>
+                        <option value="date-asc">📅 오래된순</option>
+                        <option value="name-asc">🔤 이름 A-Z</option>
+                        <option value="name-desc">🔤 이름 Z-A</option>
+                    </select>
+                    <button class="btn-secondary" onclick="toggleCheckAll()">☑️ All</button>
+                    <button class="btn-secondary" style="background:var(--secondary);color:#000;"
+                        onclick="moveCheckedToSelection()">➡️ Move</button>
+                    <button class="btn-danger" onclick="deleteChecked()">🗑️ Trash</button>
+                </div>
+                <span class="column-count" id="drafts-count">0</span>
+            </div>
+            <div class="gallery" id="drafts-gallery"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Right Column: Selection -->
+        <div class="column selection-column">
+            <div class="column-header">
+                <span>✨ Selection (To Upscale)</span>
+                <span class="column-count" id="selection-count">0</span>
+            </div>
+            <div class="gallery" id="selection-gallery">
+                <div class="drop-hint">🎯 Drop here to select</div>
+            </div>
+            <div class="selection-actions">
+                <button class="btn-danger" onclick="clearSelection()">Clear All</button>
+                <button class="btn-primary" style="background:var(--secondary);" onclick="upscaleSelection()">⚡ Upscale
+                    Selected</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="log-panel">
+        <div class="log-header">
+            <span>📋 Process Logs</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <button class="btn-secondary" style="padding:4px 10px;font-size:0.7rem;" onclick="clearLogs()">🗑️
+                    Clear</button>
+                <span class="queue-badge" id="queue-status">No active jobs</span>
+            </div>
+        </div>
+        <div class="log-content" id="log-content">Waiting for logs...</div>
+    </div>
+
+    <div id="lightbox" onclick="closeLightbox()">
+        <span class="close-btn">&times;</span>
+        <img id="lightbox-img" src="" alt="">
+        <div class="filename" id="lightbox-filename"></div>
+    </div>
+
     <script>
-        let images = [];
+        let allImages = [];
+        let selectedImages = new Set();   // IDs in the right panel
+        let checkedDrafts = new Set();    // IDs checked in the left panel
+
         async function fetchImages() {
-            try {
-                const res = await fetch('/api/images');
-                images = await res.json();
-                renderGallery();
-                showStatus('Refreshed', 'success');
-            } catch (e) { showStatus('Failed to load', 'error'); }
+            const res = await fetch('/api/images');
+            allImages = await res.json();
+            checkedDrafts.clear();
+            renderDrafts();
+            renderSelection();
         }
-        function renderGallery() {
-            const g = document.getElementById('gallery');
-            g.innerHTML = images.length ? '' : '<p style="grid-column:1/-1;text-align:center;padding:40px;color:#666;">No images found</p>';
-            images.forEach(img => {
-                const card = document.createElement('div');
-                card.className = 'card selected';
-                card.onclick = e => { if(e.target.type!=='checkbox') { const cb=card.querySelector('input'); cb.checked=!cb.checked; card.classList.toggle('selected',cb.checked); }};
-                card.innerHTML = `<div class="checkbox-overlay"><input type="checkbox" checked value="${img.id}" onchange="this.closest('.card').classList.toggle('selected',this.checked)"></div>
-                    <img src="${img.url}" alt="${img.filename}">
-                    <div class="card-body"><div style="font-size:0.7rem;color:#aaa;margin-bottom:4px;">📁 ${img.folder}</div>
-                    <h3 class="card-title" title="${img.filename}">${img.filename}</h3>
-                    <div class="card-meta">${img.title.substring(0,35)}...</div></div>`;
-                g.appendChild(card);
+
+        function renderDrafts() {
+            const g = document.getElementById('drafts-gallery');
+            g.innerHTML = '';
+            let drafts = allImages.filter(i => !selectedImages.has(i.id));
+
+            // Apply sorting
+            const sortVal = document.getElementById('sort-select')?.value || 'date-desc';
+            drafts = sortImageList(drafts, sortVal);
+
+            if (!drafts.length) {
+                g.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:20px;color:#555;">No draft images</p>';
+            } else {
+                drafts.forEach(img => g.appendChild(createDraftCard(img)));
+            }
+            document.getElementById('drafts-count').textContent = `${drafts.length} images`;
+        }
+
+        function sortImageList(list, sortVal) {
+            const sorted = [...list];
+            switch (sortVal) {
+                case 'name-asc': sorted.sort((a, b) => a.filename.localeCompare(b.filename)); break;
+                case 'name-desc': sorted.sort((a, b) => b.filename.localeCompare(a.filename)); break;
+                case 'date-asc': sorted.sort((a, b) => a.folder.localeCompare(b.folder) || a.filename.localeCompare(b.filename)); break;
+                case 'date-desc':
+                default: sorted.sort((a, b) => b.folder.localeCompare(a.folder) || b.filename.localeCompare(a.filename)); break;
+            }
+            return sorted;
+        }
+
+        function sortDrafts() { renderDrafts(); }
+
+        function renderSelection() {
+            const g = document.getElementById('selection-gallery');
+            g.innerHTML = '';
+            const selected = allImages.filter(i => selectedImages.has(i.id));
+
+            if (!selected.length) {
+                g.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:20px;color:#555;">Move images here to select</p>';
+            } else {
+                selected.forEach(img => g.appendChild(createSelectionCard(img)));
+            }
+            document.getElementById('selection-count').textContent = `${selected.length} images`;
+        }
+
+        function createDraftCard(img) {
+            const card = document.createElement('div');
+            card.className = 'card' + (checkedDrafts.has(img.id) ? ' checked' : '');
+            card.dataset.id = img.id;
+            card.draggable = true;
+
+            // Drag events
+            card.ondragstart = e => {
+                e.dataTransfer.setData('text/plain', img.id);
+                e.dataTransfer.effectAllowed = 'move';
+                card.classList.add('dragging');
+            };
+            card.ondragend = () => {
+                card.classList.remove('dragging');
+            };
+
+            card.onclick = e => {
+                if (e.target.type === 'checkbox') return;
+                const cb = card.querySelector('input');
+                cb.checked = !cb.checked;
+                toggleCheck(img.id, cb.checked);
+            };
+            card.oncontextmenu = e => { e.preventDefault(); openLightbox(img.url, img.filename); };
+
+            card.innerHTML = `
+                <div class="card-checkbox"><input type="checkbox" ${checkedDrafts.has(img.id) ? 'checked' : ''} onchange="toggleCheck('${img.id}', this.checked)"></div>
+                <img src="${img.url}" alt="${img.filename}">
+                <div class="card-body">
+                    <div class="card-title" title="${img.filename}">${img.filename}</div>
+                    <div class="card-meta">📁 ${img.folder}</div>
+                </div>`;
+            return card;
+        }
+
+        function createSelectionCard(img) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.dataset.id = img.id;
+            card.onclick = () => { selectedImages.delete(img.id); renderDrafts(); renderSelection(); };
+            card.oncontextmenu = e => { e.preventDefault(); openLightbox(img.url, img.filename); };
+            card.title = 'Click to remove from selection';
+
+            card.innerHTML = `
+                <img src="${img.url}" alt="${img.filename}">
+                <div class="card-body">
+                    <div class="card-title" title="${img.filename}">${img.filename}</div>
+                    <div class="card-meta">📁 ${img.folder}</div>
+                </div>`;
+            return card;
+        }
+
+        function toggleCheck(id, checked) {
+            if (checked) checkedDrafts.add(id);
+            else checkedDrafts.delete(id);
+
+            const card = document.querySelector(`#drafts-gallery .card[data-id="${id}"]`);
+            if (card) card.classList.toggle('checked', checked);
+        }
+
+        function toggleCheckAll() {
+            const drafts = allImages.filter(i => !selectedImages.has(i.id));
+            const allChecked = drafts.every(i => checkedDrafts.has(i.id));
+
+            if (allChecked) {
+                drafts.forEach(i => checkedDrafts.delete(i.id));
+            } else {
+                drafts.forEach(i => checkedDrafts.add(i.id));
+            }
+            renderDrafts();
+        }
+
+        function moveCheckedToSelection() {
+            if (!checkedDrafts.size) { alert('Select images first with checkboxes'); return; }
+            checkedDrafts.forEach(id => selectedImages.add(id));
+            checkedDrafts.clear();
+            renderDrafts();
+            renderSelection();
+        }
+
+        async function deleteChecked() {
+            if (!checkedDrafts.size) { alert('Select images first with checkboxes'); return; }
+            if (!confirm(`Move ${checkedDrafts.size} images to trash?`)) return;
+
+            const res = await fetch('/api/delete_images', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ files: [...checkedDrafts] })
             });
-        }
-        async function createPackage() {
-            const files = [...document.querySelectorAll('input:checked')].map(c=>c.value);
-            if(!files.length) { showStatus('Select images first', 'error'); return; }
-            showStatus('Creating...', 'success');
-            const res = await fetch('/api/create_submission_package', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({files})});
             const r = await res.json();
-            showStatus(r.message, r.success?'success':'error');
-        }
-        async function deleteSelected() {
-            const files = [...document.querySelectorAll('input:checked')].map(c=>c.value);
-            if(!files.length || !confirm(`Delete ${files.length} images?`)) return;
-            const res = await fetch('/api/delete_images', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({files})});
-            const r = await res.json();
-            showStatus(r.message, r.success?'success':'error');
+            checkedDrafts.clear();
             fetchImages();
+            alert(r.message);
         }
-        async function openFolder() { await fetch('/api/open_folder', {method:'POST'}); }
-        function showStatus(msg, type) { const el=document.getElementById('status'); el.innerText=msg; el.className=type; el.style.display='block'; setTimeout(()=>el.style.display='none',3000); }
+
+        function clearSelection() {
+            selectedImages.clear();
+            renderDrafts();
+            renderSelection();
+        }
+
+        async function upscaleSelection() {
+            if (!selectedImages.size) { alert('Move images to the right panel first'); return; }
+            const res = await fetch('/api/upscale', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ images: [...selectedImages] })
+            });
+            const r = await res.json();
+            alert(r.message);
+            startLogPolling();
+        }
+
+        async function clearLogs() {
+            await fetch('/api/logs/clear', { method: 'POST' });
+            document.getElementById('log-content').textContent = 'Logs cleared';
+        }
+
+        async function createPackage() {
+            const files = selectedImages.size > 0 ? [...selectedImages] : allImages.map(i => i.id);
+            if (!files.length) { alert('No images available'); return; }
+            const res = await fetch('/api/create_submission_package', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ files })
+            });
+            const r = await res.json();
+            alert(r.message);
+        }
+
+        async function openFolder() { await fetch('/api/open_folder', { method: 'POST' }); }
+
+        function openLightbox(url, filename) {
+            document.getElementById('lightbox-img').src = url;
+            document.getElementById('lightbox-filename').textContent = filename;
+            document.getElementById('lightbox').classList.add('active');
+        }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+        let pollingInterval = null;
+        async function pollLogs() {
+            try {
+                const qRes = await fetch('/api/queue');
+                const queue = await qRes.json();
+                const qBadge = document.getElementById('queue-status');
+                const running = queue.filter(j => j.status === 'running').length;
+                const pending = queue.filter(j => j.status === 'pending').length;
+
+                if (running > 0) {
+                    qBadge.textContent = `⏳ ${running} running, ${pending} pending`;
+                    qBadge.classList.add('running');
+                } else if (pending > 0) {
+                    qBadge.textContent = `⏳ ${pending} pending`;
+                    qBadge.classList.remove('running');
+                } else {
+                    qBadge.textContent = 'No active jobs';
+                    qBadge.classList.remove('running');
+                    if (pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
+                }
+
+                const lRes = await fetch('/api/logs');
+                const logs = await lRes.json();
+                const logEl = document.getElementById('log-content');
+                logEl.textContent = logs.lines.join('') || 'No logs yet.';
+                logEl.scrollTop = logEl.scrollHeight;
+            } catch (e) { console.error('Polling error', e); }
+        }
+
+        function startLogPolling() {
+            if (pollingInterval) return;
+            pollingInterval = setInterval(pollLogs, 2000);
+            pollLogs();
+        }
+
         fetchImages();
+        pollLogs();
+
+        // Setup drag and drop for selection gallery
+        const selectionGallery = document.getElementById('selection-gallery');
+
+        selectionGallery.ondragover = e => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            selectionGallery.classList.add('drag-over');
+        };
+
+        selectionGallery.ondragleave = e => {
+            // Only remove if leaving the gallery entirely
+            if (!selectionGallery.contains(e.relatedTarget)) {
+                selectionGallery.classList.remove('drag-over');
+            }
+        };
+
+        selectionGallery.ondrop = e => {
+            e.preventDefault();
+            selectionGallery.classList.remove('drag-over');
+
+            const imageId = e.dataTransfer.getData('text/plain');
+            if (imageId && !selectedImages.has(imageId)) {
+                selectedImages.add(imageId);
+                renderDrafts();
+                renderSelection();
+            }
+        };
+
+        // Setup drag and drop for trash zone
+        const trashZone = document.getElementById('trash-drop-zone');
+
+        trashZone.ondragover = e => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            trashZone.classList.add('drag-over');
+        };
+
+        trashZone.ondragleave = e => {
+            if (!trashZone.contains(e.relatedTarget)) {
+                trashZone.classList.remove('drag-over');
+            }
+        };
+
+        trashZone.ondrop = async e => {
+            e.preventDefault();
+            trashZone.classList.remove('drag-over');
+
+            const imageId = e.dataTransfer.getData('text/plain');
+            console.log('[TRASH DROP] imageId:', imageId);
+            if (imageId) {
+                try {
+                    const res = await fetch('/api/delete_images', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ files: [imageId] })
+                    });
+                    const result = await res.json();
+                    console.log('[TRASH DROP] API response:', result);
+                    fetchImages();
+                } catch (err) {
+                    console.error('[TRASH DROP] Error:', err);
+                }
+            }
+        };
     </script>
 </body>
+
 </html>
