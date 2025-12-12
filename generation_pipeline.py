@@ -1,21 +1,46 @@
 import os
-import cv2
 import sys
+
+# === MONKEY PATCH FOR TORCHVISION 0.16+ ===
+# Fixes 'No module named torchvision.transforms.functional_tensor' error in basicsr
+# MUST BE APPLIED BEFORE IMPORTING REALESRGAN
+try:
+    from torchvision.transforms import functional_tensor
+except ImportError:
+    try:
+        import torchvision.transforms.functional as F
+        import types
+        sys.modules["torchvision.transforms.functional_tensor"] = types.ModuleType("functional_tensor")
+        sys.modules["torchvision.transforms.functional_tensor"].rgb_to_grayscale = F.rgb_to_grayscale
+    except:
+        pass
+# ==========================================
+
+import cv2
 import time
+import gc
 import torch
 from PIL import Image
 from realesrgan import RealESRGANer
 from models import RRDBNet
 
 import datetime
+import traceback
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 GENERATIONS_ROOT = os.path.join(BASE_DIR, "generations")
 WEIGHTS_DIR = os.path.join(BASE_DIR, "weights")
 LOG_DIR = os.path.join(BASE_DIR, "logs")
 LOG_FILE = os.path.join(LOG_DIR, "upscale.log")
+ERROR_LOG_FILE = os.path.join(LOG_DIR, "error.log")
 TARGET_ASPECT_RATIO = 16 / 9
 TARGET_MIN_MP = 4
+
+# === TILE SIZE CONFIGURATION ===
+# 512: 빠름, VRAM 많이 사용 (8GB+ 필요)
+# 384: 균형, VRAM 중간 (~6GB) - 권장
+# 256: 느림 (~50% 증가), VRAM 적게 사용 (~4GB)
+TILE_SIZE = 384
 
 class ImagePipeline:
     def __init__(self, run_timestamp):
@@ -30,20 +55,24 @@ class ImagePipeline:
         
         # Ensure log directory exists
         os.makedirs(LOG_DIR, exist_ok=True)
+        
+        # Force UTF-8 for stdout/stderr to prevent encoding errors in subprocess
+        sys.stdout.reconfigure(encoding='utf-8')
 
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.log(f"Initialized Pipeline for {self.timestamp} on device: {self.device}")
+        self.log(f"Tile size: {TILE_SIZE} (lower = more stable, slower)")
         
     def log(self, message):
         """Write message to log file and stdout."""
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         formatted = f"[{timestamp}] {message}"
-        print(formatted)
+        print(formatted, flush=True)
         try:
             with open(LOG_FILE, "a", encoding="utf-8") as f:
                 f.write(formatted + "\n")
         except Exception as e:
-            print(f"Error writing to log: {e}")
+            print(f"Error writing to log: {e}", flush=True)
         
     def get_upsampler(self):
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
@@ -60,7 +89,7 @@ class ImagePipeline:
             scale=4,
             model_path=model_path,
             model=model,
-            tile=512,      # Tiling to prevent OOM
+            tile=TILE_SIZE,  # Configurable tile size for VRAM management
             tile_pad=10,
             pre_pad=0,
             half=True,     # FP16 for 2-3x speedup
@@ -86,11 +115,23 @@ class ImagePipeline:
                 img = img.crop(crop_box)
             img.save(out_path, quality=95)
 
+    def log_error(self, message, exception=None):
+        """Write error to error log file."""
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        formatted = f"[{timestamp}] ERROR: {message}"
+        if exception:
+            formatted += f"\n{traceback.format_exc()}"
+        print(formatted)
+        try:
+            with open(ERROR_LOG_FILE, "a", encoding="utf-8") as f:
+                f.write(formatted + "\n")
+        except Exception as e:
+            print(f"Error writing to error log: {e}")
+
     def process_all(self):
         self.log(f"Starting batch processing: {self.timestamp}")
+        self.log(f"=== Memory Optimized Mode: 1 image at a time ===")
         start_total = time.time()
-        
-        upsampler = self.get_upsampler()
         
         raw_files = [f for f in os.listdir(self.run_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
         total = len(raw_files)
@@ -100,34 +141,55 @@ class ImagePipeline:
             return
         
         count = 0
+        failed = 0
+        
         for idx, fname in enumerate(raw_files, 1):
             raw_path = os.path.join(self.run_dir, fname)
             processed_path = os.path.join(self.processed_dir, fname)
             upscaled_path = os.path.join(self.upscaled_dir, fname.replace('.jpg', '.png').replace('.jpeg', '.png'))
             
-            # 1. Crop
-            if not os.path.exists(processed_path):
-                self.crop_to_16_9(raw_path, processed_path)
-            
-            # 2. Upscale (Benchmarked)
-            if not os.path.exists(upscaled_path):
-                self.log(f"  [{idx}/{total}] Upscaling {fname}...")
-                t0 = time.time()
+            try:
+                # 1. Crop
+                if not os.path.exists(processed_path):
+                    self.crop_to_16_9(raw_path, processed_path)
                 
-                img = cv2.imread(processed_path, cv2.IMREAD_UNCHANGED)
-                output, _ = upsampler.enhance(img, outscale=4)
-                cv2.imwrite(upscaled_path, output)
-                
-                # Memory cleanup to prevent leaks
-                del img, output
+                # 2. Upscale - Load model fresh for each image to prevent memory accumulation
+                if not os.path.exists(upscaled_path):
+                    self.log(f"  [{idx}/{total}] Upscaling {fname}...")
+                    t0 = time.time()
+                    
+                    # Create upsampler for this image only
+                    upsampler = self.get_upsampler()
+                    
+                    img = cv2.imread(processed_path, cv2.IMREAD_UNCHANGED)
+                    if img is None:
+                        raise ValueError(f"Failed to read image: {processed_path}")
+                    
+                    output, _ = upsampler.enhance(img, outscale=4)
+                    cv2.imwrite(upscaled_path, output)
+                    
+                    # === AGGRESSIVE MEMORY CLEANUP ===
+                    del img, output, upsampler
+                    torch.cuda.empty_cache()
+                    gc.collect()
+                    # =================================
+                    
+                    dt = time.time() - t0
+                    self.log(f"  [{idx}/{total}] Done: {fname} ({dt:.2f}s)")
+                    count += 1
+                else:
+                    self.log(f"  [{idx}/{total}] Skipped (already exists): {fname}")
+                    
+            except Exception as e:
+                failed += 1
+                self.log_error(f"Failed to process {fname}", e)
+                self.log(f"  [{idx}/{total}] FAILED: {fname} - {str(e)}")
+                # Continue with next image
                 torch.cuda.empty_cache()
-                
-                dt = time.time() - t0
-                self.log(f"  [{idx}/{total}] Done: {fname} ({dt:.2f}s)")
-                count += 1
+                gc.collect()
         
         total_time = time.time() - start_total
-        self.log(f"===== 모두 완료! ({count}/{total}) =====")
+        self.log(f"===== 완료! 성공: {count}/{total}, 실패: {failed} =====")
         self.log(f"Total time: {total_time:.2f}s. Avg: {total_time/max(1, count):.2f}s/img")
         
         # Open the upscaled folder automatically

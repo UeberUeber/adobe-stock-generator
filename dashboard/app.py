@@ -5,6 +5,7 @@ import csv
 import json
 import shutil
 import threading
+import subprocess
 from datetime import datetime
 
 # === MONKEY PATCH FOR TORCHVISION 0.16+ ===
@@ -136,53 +137,79 @@ def serve_image(filepath):
     return send_from_directory(PARENT_DIR, filepath)
 
 # Job Queue for Upscale Tasks
-# Format: {"timestamp": str, "status": "pending"|"running"|"completed", "started_at": datetime, "completed_at": datetime}
+# Format: {"timestamp": str, "status": "pending"|"running"|"completed"|"failed", "pid": int, ...}
 UPSCALE_QUEUE = []
 QUEUE_LOCK = threading.Lock()
 
-def run_upscale_task(timestamp):
-    # Find job in queue and mark as running
-    with QUEUE_LOCK:
-        job = next((j for j in UPSCALE_QUEUE if j['timestamp'] == timestamp), None)
-        if job:
-            job['status'] = 'running'
-            job['started_at'] = datetime.now().isoformat()
+# Dashboard log helper
+LOG_DIR = os.path.join(PARENT_DIR, "logs")
+LOG_FILE = os.path.join(LOG_DIR, "upscale.log")
 
+def dashboard_log(message):
+    """Write dashboard-level events to the upscale log."""
+    os.makedirs(LOG_DIR, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    formatted = f"[{timestamp}] [DASHBOARD] {message}"
+    print(formatted)
     try:
-        if ImagePipeline:
-            pipeline = ImagePipeline(timestamp)
-            pipeline.process_all()
-            
-            # === AUTO-SUBMISSION LOGIC ===
-            # Find upscaled images
-            upscaled_dir = os.path.join(GENERATIONS_ROOT, timestamp, "upscaled")
-            if os.path.exists(upscaled_dir):
-                upscaled_files = [
-                    os.path.join("generations", timestamp, "upscaled", f) 
-                    for f in os.listdir(upscaled_dir) 
-                    if f.lower().endswith(('.png', '.jpg'))
-                ]
+        with open(LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(formatted + "\n")
+    except Exception as e:
+        print(f"Error writing dashboard log: {e}")
+
+def monitor_subprocess(timestamp, proc):
+    """Monitor subprocess and update queue status when it completes."""
+    try:
+        # === IMPORTANT: Read stdout to prevent pipe buffer checking (Deadlock fix) ===
+        # generation_pipeline.py already writes to upscale.log, so we don't need to write to file again.
+        # But we must drain the pipe. We can optionally print to console for debugging.
+        for line in iter(proc.stdout.readline, b''):
+            line_str = line.decode('utf-8', errors='replace').strip()
+            if line_str:
+                # Optional: print to server console only, don't double-write to log file
+                # print(f"[SUBPROCESS] {line_str}")
+                pass
                 
-                if upscaled_files:
-                    print(f"[AUTO-SUBMIT] Creating package for {len(upscaled_files)} upscaled images...")
-                    folder, count = _create_submission_package_internal(upscaled_files)
-                    print(f"[AUTO-SUBMIT] Opening folder: {folder}")
-                    os.startfile(folder)
+        proc.wait()  # Block until subprocess finishes
+        exit_code = proc.returncode
         
-        # Mark as completed
         with QUEUE_LOCK:
             job = next((j for j in UPSCALE_QUEUE if j['timestamp'] == timestamp), None)
             if job:
-                job['status'] = 'completed'
+                if exit_code == 0:
+                    job['status'] = 'completed'
+                    dashboard_log(f"✅ Upscale COMPLETED: {timestamp} (PID {proc.pid})")
+                else:
+                    job['status'] = 'failed'
+                    job['error'] = f"Process exited with code {exit_code}"
+                    dashboard_log(f"❌ Upscale FAILED: {timestamp} (exit code {exit_code})")
                 job['completed_at'] = datetime.now().isoformat()
+                
+                # Auto-submission for completed jobs
+                if exit_code == 0:
+                    try:
+                        upscaled_dir = os.path.join(GENERATIONS_ROOT, timestamp, "upscaled")
+                        if os.path.exists(upscaled_dir):
+                            upscaled_files = [
+                                os.path.join("generations", timestamp, "upscaled", f) 
+                                for f in os.listdir(upscaled_dir) 
+                                if f.lower().endswith(('.png', '.jpg'))
+                            ]
+                            if upscaled_files:
+                                print(f"[AUTO-SUBMIT] Creating package for {len(upscaled_files)} upscaled images...")
+                                folder, count = _create_submission_package_internal(upscaled_files)
+                                print(f"[AUTO-SUBMIT] Opening folder: {folder}")
+                                os.startfile(folder)
+                    except Exception as e:
+                        print(f"[AUTO-SUBMIT] Error: {e}")
+                        
     except Exception as e:
-        print(f"Error in upscale task: {e}")
-        # Mark as failed
+        print(f"Error monitoring subprocess: {e}")
         with QUEUE_LOCK:
-             job = next((j for j in UPSCALE_QUEUE if j['timestamp'] == timestamp), None)
-             if job:
-                 job['status'] = 'failed'
-                 job['error'] = str(e)
+            job = next((j for j in UPSCALE_QUEUE if j['timestamp'] == timestamp), None)
+            if job:
+                job['status'] = 'failed'
+                job['error'] = str(e)
 
 
 @app.route('/api/upscale', methods=['POST'])
@@ -211,18 +238,38 @@ def upscale_images():
             if any(j['timestamp'] == ts for j in UPSCALE_QUEUE):
                 continue
                 
-            print(f"Queueing upscale for {ts}")
+            print(f"[SUBPROCESS] Starting upscale for {ts}")
+            dashboard_log(f"🚀 Starting upscale subprocess for batch: {ts}")
+            
+            # === SUBPROCESS ISOLATION ===
+            # Run upscaling in a separate process so crashes don't kill the dashboard
+            pipeline_script = os.path.join(PARENT_DIR, "generation_pipeline.py")
+            proc = subprocess.Popen(
+                [sys.executable, pipeline_script, ts],
+                cwd=PARENT_DIR,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == 'win32' else 0
+            )
+            
+            dashboard_log(f"📋 Subprocess started: PID {proc.pid}")
+            
             UPSCALE_QUEUE.append({
                 "timestamp": ts,
-                "status": "pending",
-                "created_at": datetime.now().isoformat()
+                "status": "running",
+                "pid": proc.pid,
+                "created_at": datetime.now().isoformat(),
+                "started_at": datetime.now().isoformat()
             })
             
-            thread = threading.Thread(target=run_upscale_task, args=(ts,))
-            thread.start()
+            # Monitor subprocess in background thread
+            monitor_thread = threading.Thread(target=monitor_subprocess, args=(ts, proc))
+            monitor_thread.daemon = True
+            monitor_thread.start()
+            
             count += 1
         
-    return jsonify({'success': True, 'message': f'Queued upscaling for {count} batches'})
+    return jsonify({'success': True, 'message': f'Started {count} upscale processes (isolated)'})
 
 @app.route('/api/queue', methods=['GET'])
 def get_queue():

@@ -408,7 +408,6 @@
         <div class="controls">
             <button class="btn-secondary" onclick="fetchImages()">🔄 Refresh</button>
             <button class="btn-secondary" onclick="openFolder()">📂 Folder</button>
-            <button class="btn-primary" onclick="createPackage()">📦 CSV Submission 생성</button>
         </div>
     </header>
 
@@ -449,18 +448,20 @@
         <div class="divider"></div>
 
         <!-- Right Column: Selection -->
+        <!-- Right Column: Selection -->
         <div class="column selection-column">
             <div class="column-header">
-                <span>✨ Selection (To Upscale)</span>
+                <span>✨ Selection</span>
+                <div class="column-actions">
+                    <button class="btn-danger" onclick="clearSelection()">🗑️ Clear</button>
+                    <button class="btn-primary" style="background:var(--secondary);color:#000;"
+                        onclick="upscaleSelection()">⚡ Upscale</button>
+                    <button class="btn-primary" onclick="createPackage()">📦 CSV 생성</button>
+                </div>
                 <span class="column-count" id="selection-count">0</span>
             </div>
             <div class="gallery" id="selection-gallery">
                 <div class="drop-hint">🎯 Drop here to select</div>
-            </div>
-            <div class="selection-actions">
-                <button class="btn-danger" onclick="clearSelection()">Clear All</button>
-                <button class="btn-primary" style="background:var(--secondary);" onclick="upscaleSelection()">⚡ Upscale
-                    Selected</button>
             </div>
         </div>
     </div>

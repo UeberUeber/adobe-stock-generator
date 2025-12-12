@@ -43,3 +43,29 @@
 [2025-12-12 21:36:54] Initialized Pipeline for 2025-12-12_21-03-48 on device: cuda
 [2025-12-12 21:36:54] Starting batch processing: 2025-12-12_21-03-48
 [2025-12-12 21:36:55] No images to process
+[2025-12-12 23:24:43] Initialized Pipeline for 2025-12-12_23-18-00 on device: cuda
+[2025-12-12 23:24:43] Starting batch processing: 2025-12-12_23-18-00
+[2025-12-12 23:24:44]   [1/5] Upscaling christmas_cookies_hot_cocoa_1765549195448.png...
+[2025-12-12 23:30:37] Initialized Pipeline for 2025-12-12_23-18-00 on device: cuda
+[2025-12-12 23:30:37] Starting batch processing: 2025-12-12_23-18-00
+[2025-12-12 23:30:38]   [1/5] Upscaling christmas_cookies_hot_cocoa_1765549195448.png...
+[2025-12-12 23:58:20] [DASHBOARD] 🚀 Starting upscale subprocess for batch: 2025-12-12_23-18-00
+[2025-12-12 23:58:20] [DASHBOARD] 📋 Subprocess started: PID 23072
+[2025-12-12 23:58:26] [DASHBOARD] ❌ Upscale FAILED: 2025-12-12_23-18-00 (exit code 1)
+[2025-12-13 00:00:36] [DASHBOARD] 🚀 Starting upscale subprocess for batch: 2025-12-12_23-18-00
+[2025-12-13 00:00:36] [DASHBOARD] 📋 Subprocess started: PID 8640
+[2025-12-13 00:02:45] [DASHBOARD] 🚀 Starting upscale subprocess for batch: 2025-12-12_23-18-00
+[2025-12-13 00:02:45] [DASHBOARD] 📋 Subprocess started: PID 21384
+[2025-12-13 00:02:51] Initialized Pipeline for 2025-12-12_23-18-00 on device: cuda
+[2025-12-13 00:02:51] Tile size: 384 (lower = more stable, slower)
+[2025-12-13 00:02:51] Starting batch processing: 2025-12-12_23-18-00
+[2025-12-13 00:02:51] === Memory Optimized Mode: 1 image at a time ===
+[2025-12-13 00:02:51]   [1/3] Upscaling christmas_tree_gifts_1765549150437.png...
+[2025-12-13 00:03:01]   [1/3] Done: christmas_tree_gifts_1765549150437.png (9.39s)
+[2025-12-13 00:03:01]   [2/3] Upscaling fireplace_stockings_1765549242291.png...
+[2025-12-13 00:03:08]   [2/3] Done: fireplace_stockings_1765549242291.png (6.87s)
+[2025-12-13 00:03:08]   [3/3] Upscaling snowy_winter_village_1765549172430.png...
+[2025-12-13 00:03:15]   [3/3] Done: snowy_winter_village_1765549172430.png (6.99s)
+[2025-12-13 00:03:15] ===== 완료! 성공: 3/3, 실패: 0 =====
+[2025-12-13 00:03:15] Total time: 23.58s. Avg: 7.86s/img
+[2025-12-13 00:03:16] [DASHBOARD] ✅ Upscale COMPLETED: 2025-12-12_23-18-00 (PID 21384)

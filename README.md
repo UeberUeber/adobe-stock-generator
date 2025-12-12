@@ -119,8 +119,9 @@ Raw Image (any size)
 ### Upscaling Settings:
 - **Model**: RealESRGAN_x4plus
 - **Scale**: 4x
-- **Tiling**: 512px (prevents OOM)
+- **Tiling**: 384px (balanced VRAM/speed)
 - **FP16**: Enabled for 2-3x speedup
+- **Isolation**: Subprocess-based (crashes don't kill dashboard)
 
 ---
 
@@ -141,6 +142,39 @@ Raw Image (any size)
 - Celebrity names
 - Copyrighted characters
 - AI-related terms in metadata
+
+---
+
+## 📊 Logging & Debugging
+
+로그 파일은 `logs/` 폴더에 저장되며, 문제 해결 및 퍼포먼스 분석에 활용합니다.
+
+### Log Files:
+
+| File | Purpose |
+|------|---------|
+| `logs/upscale.log` | 업스케일링 진행 상황, 시간 측정 |
+| `logs/error.log` | 에러 스택트레이스, 크래시 원인 분석 |
+
+### When to Check Logs:
+
+1. **업스케일링 실패 시**: `error.log`에서 에러 원인 확인
+2. **속도 저하 시**: `upscale.log`에서 이미지당 처리 시간 분석
+3. **메모리 문제 시**: 타일 크기 조정 필요 여부 판단
+
+### Performance Tuning:
+
+`generation_pipeline.py`의 `TILE_SIZE` 상수 조정:
+```python
+# 512: 빠름, VRAM 많이 사용 (8GB+ 필요)
+# 384: 균형, VRAM 중간 (~6GB) - 권장
+# 256: 느림 (~50% 증가), VRAM 적게 사용 (~4GB)
+TILE_SIZE = 384
+```
+
+### Clearing Logs:
+- 대시보드 UI에서 "Clear Logs" 버튼 사용
+- 또는 `logs/upscale.log`, `logs/error.log` 직접 삭제
 
 ---
 
@@ -183,4 +217,33 @@ pip install flask pillow opencv-python torch realesrgan
   - 📚 **지식 베이스:** `config/adobe_stock_guidelines.md` 가이드라인 문서
   - 🔧 **메타데이터 품질:** 제네릭 템플릿 제거, 파일명 기반 제목 생성
   - ✅ **22개 카테고리:** Adobe Stock 전체 카테고리 지원
+- **v1.6**: Stability & Memory Optimization - 🚀 **Subprocess Isolation:** Upscaling runs in a separate process, preventing dashboard crashes - 🔧 **Memory Optimization:** Model load/unload per image, aggressive `gc.collect()` - ⚙️ **Tile Size:** Reduced to 384 (Lower VRAM usage) - 📊 **Error Logging:** Separate `logs/error.log` with stack traces
+- **v1.7**: UI/UX & Monitoring Improvements
+  - 🎨 **UI Cleanup:** Selection panel action buttons moved to header (consistent layout)
+  - ⏱️ **Real-time Monitoring:** Upscale progress and errors shown in dashboard logs instantly
+  - 🔧 **Pipe Fix:** Resolved partial logs by flushing stdout and draining pipes
+  - 🔧 **Compatibility:** Fixed `torchvision` import error in isolated subprocess
 
+---
+
+## 🤖 How to Generate Images (AI Prompt Guide)
+
+To generate initial images using an AI model (like Midjourney or DALL-E) that are compatible with this pipeline:
+
+### Recommended Prompt Structure
+Use the generated prompts from `generate_prompts.py`, or follow this structure:
+
+> **[Subject]**, **[Style/Trend]**, **[Lighting]**, **[Composition]**, **[Color Palette]** --ar 16:9 --v 6.0
+
+### Antigravity Workflow Example
+When asking Antigravity to generate images, check `config/prompt_config.md` or `generations/` folder for context.
+
+**Example Request to Antigravity:**
+> "Please generate 5 images for the 'Cozy Christmas' trend using the `prompt_engine.py` logic. Save them directly to `generations/{timestamp}/` folder. Ensure they are 16:9 aspect ratio."
+
+**Expected Output:**
+- Antigravity creates a folder: `generations/2025-12-13_10-00-00/`
+- Saves images: `image_01.png`, `image_02.png`... (raw size)
+- Saves JSON sidecars: `image_01.json` (metadata)
+
+Once images are in the folder, simply **refresh the Dashboard** to see them in "Drafts" and start the upscale process.

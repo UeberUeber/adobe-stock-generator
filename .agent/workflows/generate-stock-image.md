@@ -60,6 +60,33 @@ view_file: 생성된 이미지 경로
 
 `adobe_stock_guidelines.md` 참조하여 작성:
 
+### Adobe Stock 20개 카테고리 (필수 참조!)
+| ID | 카테고리 | 설명 |
+|----|---------|------|
+| 1 | Animals | 동물, 애완동물, 야생동물 |
+| 2 | Buildings and Architecture | 건물, 건축, 랜드마크, 인테리어 |
+| 3 | Business | 비즈니스, 사무실, 기업, 금융 |
+| 4 | Drinks | 음료, 커피, 칵테일, 와인 |
+| 5 | The Environment | 환경, 생태, 지속가능성 |
+| 6 | States of Mind | 감정, 기분, 심리 |
+| 7 | Food | 음식, 요리, 식재료 |
+| 8 | Graphic Resources | 그래픽, 패턴, 텍스처, 배경 |
+| 9 | Hobbies and Leisure | 취미, 여가, 오락 |
+| 10 | Industry | 산업, 공장, 제조 |
+| 11 | Landscapes | 풍경, 자연, 산, 해변 |
+| 12 | Lifestyle | 라이프스타일, 일상, 웰빙 |
+| 13 | People | 사람, 초상화, 그룹 |
+| 14 | Plants and Flowers | 식물, 꽃, 정원, 나무 |
+| 15 | Culture and Religion | 문화, 종교, **축제, 크리스마스, 명절** |
+| 16 | Science | 과학, 연구, 실험 |
+| 17 | Social Issues | 사회문제, 커뮤니티 |
+| 18 | Sports | 스포츠, 피트니스, 운동 |
+| 19 | Technology | 기술, 컴퓨터, 디지털 |
+| 20 | Transport | 교통, 차량, 비행기 |
+| 21 | Travel | 여행, 관광, 휴가 |
+
+> ⚠️ **크리스마스, 설날, 추수감사절 등 명절 이미지는 반드시 Category 15 (Culture and Religion) 사용!**
+
 ```json
 {
   "filename": "{오브젝트}_{장소}_{분위기}.png",
@@ -70,7 +97,8 @@ view_file: 생성된 이미지 경로
     ... 
     // 총 15-35개, 중요도 순
   ],
-  "category": "{Adobe Stock 카테고리 ID}",
+  "category": "{위 표에서 가장 적합한 ID 선택}",
+  "category_name": "{카테고리 이름}",
   "asset_type": "photo" 또는 "illustration",
   "prompt": "{사용한 프롬프트}",
   "is_ai_generated": true,
