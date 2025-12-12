@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 from enum import Enum
 import re
+import os
+import json
 
 # Adobe Stock Category IDs (most common ones)
 class AdobeCategory(Enum):
@@ -301,20 +303,46 @@ class MetadataGenerator:
         # Determine Category: Use override if provided, else trend default
         category = override_category if override_category else trend_data["category"]
         
-        # Build optimized sentence-style title
-        # Ex: "Futuristic Neon Cyberpunk Science & Tech Scene with Vibrant Colors"
-        title = f"{trend_data['title_prefix']} {subject.replace('&', 'and')} Scene with {lighting} and {color} Tones"
+        # Build title from filename keywords (NOT templates)
+        # Extract meaningful words from filename
+        name_without_ext = filename.rsplit(".", 1)[0]
+        # Remove timestamp patterns like _1765540915528 or _20251212
+        import re
+        name_clean = re.sub(r'_\d{10,}$', '', name_without_ext)  # Remove Unix timestamps
+        name_clean = re.sub(r'_\d{8}_\d{6}$', '', name_clean)   # Remove YYYYMMDD_HHMMSS
+        name_clean = re.sub(r'_\d+$', '', name_clean)           # Remove any trailing numbers
         
-        # Collect all keywords
-        keywords = list(trend_data["keywords"])
+        # Convert underscores to spaces and capitalize
+        title_words = name_clean.replace('_', ' ').replace('-', ' ').split()
+        title_words = [w.capitalize() for w in title_words if len(w) > 1]
+        
+        # Create natural title (max 70 chars)
+        if title_words:
+            title = ' '.join(title_words)
+            # DO NOT add subject suffix - keep title clean and descriptive
+        else:
+            # Fallback: use subject only if no words from filename
+            title = f"{subject.replace('&', 'and')} Scene"
+        
+        # Truncate if too long
+        if len(title) > 70:
+            title = title[:67] + "..."
+        
+        # Collect keywords - START with filename keywords (most relevant)
+        keywords = []
+        
+        # Add filename-derived keywords FIRST (highest priority)
+        for w in title_words:
+            keywords.append(w.lower())
+        
+        # Add subject-related keywords (NOT the generic trend keywords)
         keywords.extend(SUBJECT_KEYWORDS.get(subject, []))
         keywords.extend(STYLE_KEYWORDS.get(style, []))
         keywords.extend(LIGHTING_KEYWORDS.get(lighting, []))
         keywords.extend(COLOR_KEYWORDS.get(color, []))
         
-        # Sales Booster Keywords (Always add these if applicable)
-        sales_boosters = ["high quality", "high resolution", "4k", "commercial use", "stock photo", "copy space", "background", "wallpaper"]
-        keywords.extend(sales_boosters)
+        # NOTE: Removed generic "Sales Booster Keywords" like "professional, commercial, stock photo"
+        # These are considered spam by Adobe Stock if not relevant to actual content
         
         # Remove duplicates while preserving order
         seen = set()
@@ -338,8 +366,42 @@ class MetadataGenerator:
             is_fictional=has_people,  # Mark as fictional if contains people
         )
     
-    def generate_from_filename(self, filename: str) -> StockMetadata:
-        """Generate metadata by parsing filename patterns."""
+    def generate_from_filename(self, filename: str, image_dir: str = None) -> StockMetadata:
+        """
+        Generate metadata by loading JSON sidecar or parsing filename patterns.
+        
+        Args:
+            filename: Image filename
+            image_dir: Optional directory containing the image (for JSON lookup)
+        """
+        # === TRY JSON METADATA FIRST ===
+        if image_dir:
+            json_path = os.path.join(image_dir, filename.rsplit(".", 1)[0] + ".json")
+            if os.path.exists(json_path):
+                try:
+                    with open(json_path, "r", encoding="utf-8") as f:
+                        meta = json.load(f)
+                    
+                    # Determine category from JSON or infer
+                    category = AdobeCategory.GRAPHIC_RESOURCES  # Default
+                    if "category" in meta:
+                        for cat in AdobeCategory:
+                            if cat.value == str(meta["category"]):
+                                category = cat
+                                break
+                    
+                    return StockMetadata(
+                        filename=filename,
+                        title=meta.get("title", "Professional Stock Image"),
+                        keywords=meta.get("keywords", []),
+                        category=category,
+                        is_generative_ai=meta.get("is_ai_generated", True),
+                        is_fictional=meta.get("is_fictional", True),
+                    )
+                except Exception as e:
+                    print(f"Warning: Could not load JSON metadata: {e}")
+        
+        # === FALLBACK: Parse filename patterns ===
         fname_lower = filename.lower()
         
         # Default implicit values

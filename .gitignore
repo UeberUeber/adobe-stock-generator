@@ -18,12 +18,8 @@ ENV/
 *.swo
 
 # Project specific
-generations/
 submissions/
-*.webp
-*.png
-*.jpg
-*.jpeg
+# Note: generations/ and images are NOT ignored so Claude can analyze them
 
 # Metadata files
 *.metadata.json

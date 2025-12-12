@@ -40,3 +40,6 @@
 [2025-12-12 21:15:12]   [5/5] Done: snowy_winter_village_1765540951218.png (6.57s)
 [2025-12-12 21:15:12] ===== 모두 완료! (2/5) =====
 [2025-12-12 21:15:12] Total time: 14.27s. Avg: 7.14s/img
+[2025-12-12 21:36:54] Initialized Pipeline for 2025-12-12_21-03-48 on device: cuda
+[2025-12-12 21:36:54] Starting batch processing: 2025-12-12_21-03-48
+[2025-12-12 21:36:55] No images to process

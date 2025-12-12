@@ -176,4 +176,11 @@ pip install flask pillow opencv-python torch realesrgan
   - ✨ Auto-open upscaled folder on completion
   - ✨ Log Clear button in dashboard
   - 🚀 Auto-generate submission package after upscale
+- **v1.5**: JSON Sidecar Metadata System
+  - ✨ **새 모듈:** `prompt_metadata.py` - 프롬프트에서 메타데이터 자동 추출
+  - ✨ **JSON 사이드카:** 이미지마다 `.json` 메타데이터 파일 생성
+  - 🔧 **CSV 개선:** JSON 파일 우선 로드, 없으면 파일명에서 추론
+  - 📚 **지식 베이스:** `config/adobe_stock_guidelines.md` 가이드라인 문서
+  - 🔧 **메타데이터 품질:** 제네릭 템플릿 제거, 파일명 기반 제목 생성
+  - ✅ **22개 카테고리:** Adobe Stock 전체 카테고리 지원
 

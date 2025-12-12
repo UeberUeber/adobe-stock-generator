@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, request, send_from_directory
 import os
 import sys
 import csv
+import json
 import shutil
 import threading
 from datetime import datetime
@@ -53,10 +54,33 @@ print(f"PARENT_DIR: {PARENT_DIR}")
 print(f"GENERATIONS_ROOT: {GENERATIONS_ROOT}")
 print(f"===================")
 
-def get_metadata_for_file(filename):
-    """Generate Adobe Stock compliant metadata for a file."""
+def get_metadata_for_file(filename, image_dir=None):
+    """Generate Adobe Stock compliant metadata for a file.
+    
+    Args:
+        filename: Image filename
+        image_dir: Directory containing the image (for JSON lookup)
+    """
+    # 1. Try to read JSON sidecar file first
+    if image_dir:
+        json_path = os.path.join(image_dir, filename.rsplit(".", 1)[0] + ".json")
+        if os.path.exists(json_path):
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    meta = json.load(f)
+                return {
+                    "Title": meta.get("title", "Stock Image"),
+                    "Keywords": ", ".join(meta.get("keywords", [])),
+                    "Category": str(meta.get("category", "1")),
+                    "is_generative_ai": meta.get("is_ai_generated", True),
+                    "is_fictional": meta.get("is_fictional", True),
+                }
+            except Exception as e:
+                print(f"[WARNING] Failed to read JSON metadata: {e}")
+    
+    # 2. Fallback to metadata_generator
     if metadata_gen:
-        meta = metadata_gen.generate_from_filename(filename)
+        meta = metadata_gen.generate_from_filename(filename, image_dir)
         return {
             "Title": meta.get_clean_title(),
             "Keywords": meta.get_keywords_str(),
@@ -65,7 +89,7 @@ def get_metadata_for_file(filename):
             "is_fictional": meta.is_fictional,
         }
     else:
-        # Fallback if import failed
+        # 3. Last fallback if import failed
         return {
             "Title": "Adobe Stock Image", 
             "Keywords": "stock, image, generic, professional, quality", 
@@ -239,6 +263,7 @@ def _create_submission_package_internal(selected_ids):
     os.makedirs(submission_folder, exist_ok=True)
     
     successful = []
+    source_dirs = {}  # Map filename to source directory for JSON lookup
     for rel_path in selected_ids:
         if '..' in rel_path: continue
         # Normalize path separators
@@ -248,7 +273,10 @@ def _create_submission_package_internal(selected_ids):
         if os.path.exists(src):
             try:
                 shutil.copy2(src, submission_folder)
-                successful.append(os.path.basename(src))
+                fn = os.path.basename(src)
+                successful.append(fn)
+                # Track source directory for JSON lookup
+                source_dirs[fn] = os.path.dirname(src)
             except Exception as e:
                 print(f"[ERROR] Failed to copy {src}: {e}")
     
@@ -260,7 +288,9 @@ def _create_submission_package_internal(selected_ids):
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for fn in successful:
-            meta = get_metadata_for_file(fn)
+            # Pass source directory so JSON can be read
+            image_dir = source_dirs.get(fn)
+            meta = get_metadata_for_file(fn, image_dir)
             writer.writerow({
                 "Filename": fn, 
                 "Title": meta["Title"], 
