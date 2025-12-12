@@ -17,12 +17,24 @@ ENV/
 *.swp
 *.swo
 
-# Project specific
-submissions/
-generations/
-trash/
-logs/
-weights/
+# Project specific (Keep folders, ignore content)
+submissions/*
+!submissions/.gitkeep
+
+generations/*
+!generations/.gitkeep
+
+trash/*
+!trash/.gitkeep
+
+logs/*
+!logs/.gitkeep
+
+weights/*
+!weights/.gitkeep
+
+# Exclude large/binary files explicitly if needed
+*.pth
 
 # Metadata files
 *.metadata.json
