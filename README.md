@@ -21,7 +21,8 @@ adobe-stock-generator/
 │   └── templates/
 │       └── index.html          # Drag-and-drop dashboard UI
 ├── config/
-│   └── prompt_config.md        # 📝 Editable prompt configuration
+│   ├── prompt_config.md        # 📝 Editable prompt configuration
+│   └── adobe_stock_guidelines.md # 📚 Metadata best practices & rules
 ├── visual_schema.py            # Visual attribute enums
 ├── prompt_engine.py            # Prompt construction logic
 ├── generate_prompts.py         # Prompt generation script
