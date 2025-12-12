@@ -2,6 +2,8 @@
 
 AI-powered image generation pipeline for Adobe Stock submissions with drag-and-drop dashboard management.
 
+> ℹ️ **Note:** This project is designed to operate as a core module within the **Google Antigravity** agentic workflow, enabling seamless automation from prompt generation to final submission.
+
 ## 🎯 Overview
 
 This project automates the Adobe Stock image submission workflow:
