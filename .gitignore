@@ -19,7 +19,10 @@ ENV/
 
 # Project specific
 submissions/
-# Note: generations/ and images are NOT ignored so Claude can analyze them
+generations/
+trash/
+logs/
+weights/
 
 # Metadata files
 *.metadata.json
