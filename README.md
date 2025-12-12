@@ -106,44 +106,62 @@ Edit `config/prompt_config.md` to customize prompts. Changes are reflected autom
 
 ---
 
-## 🖼️ Image Processing Pipeline
+---
+## 🏗️ System Architecture
 
-```
-Raw Image (any size)
-    ↓
-[Crop to 16:9] → generations/{ts}/processed/
-    ↓
-[Real-ESRGAN 4x] → generations/{ts}/upscaled/ (4K output)
-    ↓
-[Select & Submit] → submissions/submission_{ts}/
+```mermaid
+graph TD
+    User([User / Agent]) -->|1. Generate Prompts| A[Prompt Engine]
+    A -->|Prompts| B[AI Image Generator]
+    B -->|Raw Images + JSON| C[Generations Folder]
+    
+    subgraph "Dashboard (Flask)"
+        C -->|Load Drafts| D[UI Interface]
+        D -->|Select & Upscale| E[Job Queue]
+        E -->|Spawn| F[Isolated Subprocess]
+    end
+    
+    subgraph "Worker Process"
+        F -->|Load Model| G[Real-ESRGAN]
+        G -->|Tile Processing| H[4K Image]
+        H -->|Memory Cleanup| I[GC / CUDA Empty]
+    end
+    
+    I -->|Save| J[Upscaled Folder]
+    J -->|Review| D
+    D -->|Export| K[Submission Package]
+    
+    K -->|CSV + Images| L(Adobe Stock)
 ```
 
-### Upscaling Settings:
-- **Model**: RealESRGAN_x4plus
-- **Scale**: 4x
-- **Tiling**: 384px (balanced VRAM/speed)
-- **FP16**: Enabled for 2-3x speedup
-- **Isolation**: Subprocess-based (crashes don't kill dashboard)
+## 🔧 Key Technical Decisions & Optimizations
+
+This project implements several advanced patterns to ensure stability and performance in a resource-intensive AI pipeline.
+
+### 1. Process Isolation for Stability (Crash Resilience)
+- **Challenge:** Upscaling 4K images consumes significant VRAM. If an OOM (Out of Memory) error occurs in a thread, it crashes the entire Flask web server.
+- **Solution:** Integrated a **Subprocess Architecture**. The upscaling pipeline runs in a completely isolated process (`subprocess.Popen`).
+- **Benefit:** If the GPU worker crashes, the dashboard remains alive, catches the exit code, and reports the error without downtime.
+
+### 2. Memory Leak Prevention
+- **Challenge:** PyTorch models and CUDA buffers often linger in VRAM, causing progressive memory buildup when processing batches of images.
+- **Solution:** Implemented a **"Load-Execute-Unload"** pattern per image:
+  - Explicitly `del` model and image tensors after each iteration.
+  - Force `gc.collect()` and `torch.cuda.empty_cache()` to reclaim memory.
+  - Reduced Real-ESRGAN tile size to **384px** to balance VRAM usage (6GB safe zone) vs. inference speed.
+
+### 3. Real-time Log Streaming & Deadlock Prevention
+- **Challenge:** Python's stdout buffering caused log delays, and unread pipes led to process deadlocks.
+- **Solution:** 
+  - Forced `sys.stdout.reconfigure(encoding='utf-8')` and `flush=True` in the worker.
+  - Implemented a non-blocking pipe reader in the dashboard to drain stdout in real-time.
+  - Dashboard UI polls an aggregated log system for live feedback.
+
+### 4. Compatibility Patches
+- **Challenge:** `basicsr` library (dependency of Real-ESRGAN) is incompatible with newer `torchvision` versions due to removed modules.
+- **Solution:** Injected a runtime **Monkey Patch** to polyfill `torchvision.transforms.functional_tensor`, ensuring compatibility with the latest PyTorch ecosystem without downgrading packages.
 
 ---
-
-## 📋 Adobe Stock Compliance
-
-### Automatic Metadata Generation:
-- Clean titles (no banned words)
-- 5-50 optimized keywords
-- Category classification
-- Release status
-
-### Required Upload Checkboxes:
-- ✅ "Created using generative AI tools"
-- ✅ "People and Property are fictional"
-
-### Banned Content (Auto-filtered):
-- Brand names & logos
-- Celebrity names
-- Copyrighted characters
-- AI-related terms in metadata
 
 ---
 
