@@ -1,0 +1,6 @@
+Flask
+Pillow
+opencv-python
+torch
+torchvision
+realesrgan
