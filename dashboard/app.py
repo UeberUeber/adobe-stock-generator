@@ -61,6 +61,9 @@ def get_metadata_for_file(filename, image_dir=None):
     Args:
         filename: Image filename
         image_dir: Directory containing the image (for JSON lookup)
+        
+    Returns:
+        dict with Title, Keywords, Category, is_generative_ai, is_fictional, has_json
     """
     # 1. Try to read JSON sidecar file first
     if image_dir:
@@ -75,11 +78,13 @@ def get_metadata_for_file(filename, image_dir=None):
                     "Category": str(meta.get("category", "1")),
                     "is_generative_ai": meta.get("is_ai_generated", True),
                     "is_fictional": meta.get("is_fictional", True),
+                    "has_json": True,  # JSON found and loaded
                 }
             except Exception as e:
                 print(f"[WARNING] Failed to read JSON metadata: {e}")
     
-    # 2. Fallback to metadata_generator
+    # 2. Fallback to metadata_generator (JSON not found!)
+    print(f"[WARNING] No JSON metadata for {filename} - using filename inference")
     if metadata_gen:
         meta = metadata_gen.generate_from_filename(filename, image_dir)
         return {
@@ -88,6 +93,7 @@ def get_metadata_for_file(filename, image_dir=None):
             "Category": meta.category.value,
             "is_generative_ai": meta.is_generative_ai,
             "is_fictional": meta.is_fictional,
+            "has_json": False,  # No JSON - inferred from filename
         }
     else:
         # 3. Last fallback if import failed
@@ -96,7 +102,8 @@ def get_metadata_for_file(filename, image_dir=None):
             "Keywords": "stock, image, generic, professional, quality", 
             "Category": "1",
             "is_generative_ai": True,
-            "is_fictional": True
+            "is_fictional": True,
+            "has_json": False,
         }
 
 @app.route('/')
@@ -117,15 +124,15 @@ def list_images():
                 rel_id = os.path.relpath(full_path, PARENT_DIR).replace('\\', '/')
                 folder_name = os.path.basename(root)
                 
-                # Check for upscaled version mapping if needed, 
-                # but for now just list everything that is an image
-                
-                meta = get_metadata_for_file(f)
+                # Pass image directory for JSON lookup (BUG FIX)
+                image_dir = root
+                meta = get_metadata_for_file(f, image_dir)
                 image_list.append({
                     "id": rel_id,
                     "filename": f,
                     "folder": folder_name,
                     "title": meta["Title"],
+                    "has_json": meta.get("has_json", False),
                     "url": f"/images_serve/{rel_id}"
                 })
     
@@ -185,23 +192,20 @@ def monitor_subprocess(timestamp, proc):
                     dashboard_log(f"❌ Upscale FAILED: {timestamp} (exit code {exit_code})")
                 job['completed_at'] = datetime.now().isoformat()
                 
-                # Auto-submission for completed jobs
+                # Auto-generate CSV in upscaled folder (simplified flow)
                 if exit_code == 0:
                     try:
                         upscaled_dir = os.path.join(GENERATIONS_ROOT, timestamp, "upscaled")
                         if os.path.exists(upscaled_dir):
-                            upscaled_files = [
-                                os.path.join("generations", timestamp, "upscaled", f) 
-                                for f in os.listdir(upscaled_dir) 
-                                if f.lower().endswith(('.png', '.jpg'))
-                            ]
-                            if upscaled_files:
-                                print(f"[AUTO-SUBMIT] Creating package for {len(upscaled_files)} upscaled images...")
-                                folder, count = _create_submission_package_internal(upscaled_files)
-                                print(f"[AUTO-SUBMIT] Opening folder: {folder}")
-                                os.startfile(folder)
+                            csv_path, count, missing_json = _create_csv_in_folder(upscaled_dir)
+                            if missing_json:
+                                print(f"[AUTO-CSV] ⚠️ WARNING: {len(missing_json)} images missing JSON metadata!")
+                                for fn in missing_json:
+                                    print(f"  - {fn}")
+                            print(f"[AUTO-CSV] Created {csv_path} with {count} entries")
+                            os.startfile(upscaled_dir)
                     except Exception as e:
-                        print(f"[AUTO-SUBMIT] Error: {e}")
+                        print(f"[AUTO-CSV] Error: {e}")
                         
     except Exception as e:
         print(f"Error monitoring subprocess: {e}")
@@ -300,6 +304,40 @@ def clear_logs():
         return jsonify({"success": True, "message": "Logs cleared"})
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
+
+def _create_csv_in_folder(folder_path):
+    """Create submission.csv directly in the given folder.
+    
+    Args:
+        folder_path: Directory containing images and JSON files
+        
+    Returns:
+        (csv_path, count, missing_json_list)
+    """
+    images = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+    
+    csv_path = os.path.join(folder_path, "submission.csv")
+    missing_json = []
+    
+    with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+        fieldnames = ['Filename', 'Title', 'Keywords', 'Category', 'Releases']
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        
+        for img in images:
+            meta = get_metadata_for_file(img, folder_path)
+            if not meta.get("has_json", False):
+                missing_json.append(img)
+            
+            writer.writerow({
+                "Filename": img,
+                "Title": meta["Title"],
+                "Keywords": meta["Keywords"],
+                "Category": meta["Category"],
+                "Releases": "",
+            })
+    
+    return csv_path, len(images), missing_json
 
 def _create_submission_package_internal(selected_ids):
     """Internal function to create submission package from relative file paths."""

@@ -26,6 +26,7 @@ from models import RRDBNet
 
 import datetime
 import traceback
+import shutil
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 GENERATIONS_ROOT = os.path.join(BASE_DIR, "generations")
@@ -92,7 +93,7 @@ class ImagePipeline:
             tile=TILE_SIZE,  # Configurable tile size for VRAM management
             tile_pad=10,
             pre_pad=0,
-            half=True,     # FP16 for 2-3x speedup
+            half=False,    # FP32 for better quality (slower but reduces artifacts)
             gpu_id=0 if torch.cuda.is_available() else None
         )
         return upsampler
@@ -113,7 +114,8 @@ class ImagePipeline:
                     offset = (height - new_height) // 2
                     crop_box = (0, offset, width, offset + new_height)
                 img = img.crop(crop_box)
-            img.save(out_path, quality=95)
+            # PNG for lossless quality (no JPEG compression artifacts)
+            img.save(out_path, format='PNG')
 
     def log_error(self, message, exception=None):
         """Write error to error log file."""
@@ -145,11 +147,13 @@ class ImagePipeline:
         
         for idx, fname in enumerate(raw_files, 1):
             raw_path = os.path.join(self.run_dir, fname)
-            processed_path = os.path.join(self.processed_dir, fname)
-            upscaled_path = os.path.join(self.upscaled_dir, fname.replace('.jpg', '.png').replace('.jpeg', '.png'))
+            # Processed files are now PNG
+            processed_fname = fname.rsplit('.', 1)[0] + '.png'
+            processed_path = os.path.join(self.processed_dir, processed_fname)
+            upscaled_path = os.path.join(self.upscaled_dir, processed_fname)
             
             try:
-                # 1. Crop
+                # 1. Crop (saves as PNG now)
                 if not os.path.exists(processed_path):
                     self.crop_to_16_9(raw_path, processed_path)
                 
@@ -177,6 +181,14 @@ class ImagePipeline:
                     dt = time.time() - t0
                     self.log(f"  [{idx}/{total}] Done: {fname} ({dt:.2f}s)")
                     count += 1
+                    
+                    # Copy JSON metadata file to upscaled folder if exists
+                    json_fname = fname.rsplit('.', 1)[0] + '.json'
+                    json_src = os.path.join(self.run_dir, json_fname)
+                    json_dst = os.path.join(self.upscaled_dir, json_fname)
+                    if os.path.exists(json_src) and not os.path.exists(json_dst):
+                        shutil.copy2(json_src, json_dst)
+                        self.log(f"  [{idx}/{total}] Copied JSON metadata: {json_fname}")
                 else:
                     self.log(f"  [{idx}/{total}] Skipped (already exists): {fname}")
                     

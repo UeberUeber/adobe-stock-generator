@@ -243,6 +243,12 @@ pip install flask pillow opencv-python torch realesrgan
   - ⏱️ **Real-time Monitoring:** Upscale progress and errors shown in dashboard logs instantly
   - 🔧 **Pipe Fix:** Resolved partial logs by flushing stdout and draining pipes
   - 🔧 **Compatibility:** Fixed `torchvision` import error in isolated subprocess
+- **v1.8**: CSV Simplification & Metadata Flow Fix
+  - 🔧 **CSV 직접 생성:** `upscaled/` 폴더에 `submission.csv` 직접 생성 (별도 submissions 폴더 불필요)
+  - 🔧 **JSON 복사 버그 수정:** 업스케일 시 JSON 메타데이터 파일을 `upscaled/` 폴더로 자동 복사
+  - 🔧 **JSON 읽기 버그 수정:** `list_images()` API에서 `image_dir` 파라미터 누락 문제 해결
+  - ⚠️ **JSON 누락 경고:** CSV 생성 시 JSON 없는 이미지에 대해 콘솔 경고 출력
+  - 📊 **has_json 플래그:** 이미지 목록 API에서 JSON 메타데이터 존재 여부 표시
 
 ---
 
