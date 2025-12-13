@@ -70,7 +70,7 @@ def get_metadata_for_file(filename, image_dir=None):
         json_path = os.path.join(image_dir, filename.rsplit(".", 1)[0] + ".json")
         if os.path.exists(json_path):
             try:
-                with open(json_path, "r", encoding="utf-8") as f:
+                with open(json_path, "r", encoding="utf-8-sig") as f:
                     meta = json.load(f)
                 return {
                     "Title": meta.get("title", "Stock Image"),
@@ -192,20 +192,14 @@ def monitor_subprocess(timestamp, proc):
                     dashboard_log(f"❌ Upscale FAILED: {timestamp} (exit code {exit_code})")
                 job['completed_at'] = datetime.now().isoformat()
                 
-                # Auto-generate CSV in upscaled folder (simplified flow)
+                # Open upscaled folder on completion (no auto CSV - user generates via button)
                 if exit_code == 0:
                     try:
                         upscaled_dir = os.path.join(GENERATIONS_ROOT, timestamp, "upscaled")
                         if os.path.exists(upscaled_dir):
-                            csv_path, count, missing_json = _create_csv_in_folder(upscaled_dir)
-                            if missing_json:
-                                print(f"[AUTO-CSV] ⚠️ WARNING: {len(missing_json)} images missing JSON metadata!")
-                                for fn in missing_json:
-                                    print(f"  - {fn}")
-                            print(f"[AUTO-CSV] Created {csv_path} with {count} entries")
                             os.startfile(upscaled_dir)
                     except Exception as e:
-                        print(f"[AUTO-CSV] Error: {e}")
+                        print(f"[OPEN FOLDER] Error: {e}")
                         
     except Exception as e:
         print(f"Error monitoring subprocess: {e}")
@@ -316,6 +310,11 @@ def _create_csv_in_folder(folder_path):
     """
     images = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
     
+    # Also check parent folder for JSON files (generation root)
+    parent_folder = os.path.dirname(folder_path)
+    print(f"[CSV] folder_path: {folder_path}")
+    print(f"[CSV] parent_folder: {parent_folder}")
+    
     csv_path = os.path.join(folder_path, "submission.csv")
     missing_json = []
     
@@ -325,7 +324,21 @@ def _create_csv_in_folder(folder_path):
         writer.writeheader()
         
         for img in images:
-            meta = get_metadata_for_file(img, folder_path)
+            # Check parent folder FIRST (where JSON files are created)
+            json_base = img.rsplit(".", 1)[0] + ".json"
+            parent_json = os.path.join(parent_folder, json_base)
+            current_json = os.path.join(folder_path, json_base)
+            
+            print(f"[CSV] Looking for JSON: {parent_json} exists={os.path.exists(parent_json)}")
+            print(f"[CSV] Looking for JSON: {current_json} exists={os.path.exists(current_json)}")
+            
+            if os.path.exists(parent_json):
+                meta = get_metadata_for_file(img, parent_folder)
+            elif os.path.exists(current_json):
+                meta = get_metadata_for_file(img, folder_path)
+            else:
+                meta = get_metadata_for_file(img, folder_path)
+            
             if not meta.get("has_json", False):
                 missing_json.append(img)
             
@@ -401,13 +414,38 @@ def _create_submission_package_internal(selected_ids):
 
 @app.route('/api/create_submission_package', methods=['POST'])
 def create_submission_package():
+    """Generate submission.csv in the upscaled folder using JSON metadata."""
     selected_ids = request.json.get('files', [])
     if not selected_ids:
         return jsonify({"success": False, "message": "No files selected"})
     
-    folder, count = _create_submission_package_internal(selected_ids)
-    os.startfile(folder)
-    return jsonify({"success": True, "message": f"Package created: {count} images with Adobe Stock compliant metadata"})
+    # Find unique upscaled folders from selected files
+    upscaled_folders = set()
+    for rel_path in selected_ids:
+        if 'upscaled' in rel_path:
+            # Extract the upscaled folder path
+            parts = rel_path.replace('\\', '/').split('/')
+            try:
+                idx = parts.index('upscaled')
+                folder_path = '/'.join(parts[:idx+1])
+                full_path = os.path.join(PARENT_DIR, folder_path.replace('/', os.sep))
+                upscaled_folders.add(full_path)
+            except ValueError:
+                pass
+    
+    if not upscaled_folders:
+        return jsonify({"success": False, "message": "Select upscaled images to generate CSV"})
+    
+    results = []
+    for folder in upscaled_folders:
+        csv_path, count, missing_json = _create_csv_in_folder(folder)
+        if missing_json:
+            results.append(f"⚠️ {os.path.basename(os.path.dirname(folder))}: {count} images, {len(missing_json)} missing JSON")
+        else:
+            results.append(f"✅ {os.path.basename(os.path.dirname(folder))}: {count} images")
+        os.startfile(folder)
+    
+    return jsonify({"success": True, "message": f"CSV created: {', '.join(results)}"})
 
 @app.route('/api/delete_images', methods=['POST'])
 def delete_images():

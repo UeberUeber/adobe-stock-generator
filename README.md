@@ -69,10 +69,12 @@ Opens http://127.0.0.1:5001
 
 | Action | Method |
 |--------|--------|
+| **Filter Images** | Use filter dropdown: All / Raw / Processed / Upscaled |
 | **Select for Upscale** | Drag image → Right panel (Selection) |
 | **Delete Image** | Drag image → Left panel (Trash) |
 | **Upscale Selected** | Click "⚡ Upscale Selected" |
-| **Upload to Adobe** | Open `upscaled/` folder → `submission.csv` + images |
+| **Generate CSV** | Select upscaled images → Click "📦 CSV 생성" |
+| **Upload to Adobe** | Open `upscaled/` folder → Upload `submission.csv` + images |
 
 ---
 
@@ -110,27 +112,38 @@ Edit `config/prompt_config.md` to customize prompts. Changes are reflected autom
 graph TD
     User([User / Agent]) -->|1. Generate Prompts| A[Prompt Engine]
     A -->|Prompts| B[AI Image Generator]
-    B -->|Raw Images + JSON| C[Generations Folder]
+    B -->|Raw Images| C[Generations Folder]
+    
+    subgraph "Metadata Creation"
+        C -->|Analyze Image| D[JSON Sidecar]
+        D -->|title, keywords, category| C
+    end
     
     subgraph "Dashboard Flask"
-        C -->|Load Drafts| D[UI Interface]
-        D -->|Select and Upscale| E[Job Queue]
-        E -->|Spawn| F[Isolated Subprocess]
+        C -->|Load Drafts| E[UI Interface]
+        E -->|Filter: Raw/Processed/Upscaled| E
+        E -->|Select and Upscale| F[Job Queue]
+        F -->|Spawn| G[Isolated Subprocess]
     end
     
     subgraph "Worker Process"
-        F -->|Load Model| G[Real-ESRGAN]
-        G -->|Tile Processing| H[4K Image]
-        H -->|Copy JSON| I[JSON Metadata]
+        G -->|Load Model| H[Real-ESRGAN]
+        H -->|Tile Processing| I[4K Image]
         I -->|Memory Cleanup| J[GC and CUDA Empty]
     end
     
-    J -->|Save to upscaled folder| K[Upscaled Folder]
-    K -->|Auto-generate| L[submission.csv]
-    L -->|Upload Ready| M(Adobe Stock)
+    J -->|Save| K[Upscaled Folder]
     
-    style L fill:#90EE90
+    subgraph "CSV Generation"
+        K -->|User clicks CSV button| L[Read JSON from parent folder]
+        L -->|Generate| M[submission.csv]
+    end
+    
+    M -->|Upload Ready| N(Adobe Stock)
+    
+    style M fill:#90EE90
     style K fill:#87CEEB
+    style D fill:#FFD700
 ```
 
 ## 🔧 Key Technical Decisions & Optimizations
@@ -251,6 +264,11 @@ pip install flask pillow opencv-python torch realesrgan
 - **v1.81**: UI Filter Dropdown
   - 🎨 **필터 드롭다운:** Drafts 영역에 필터 추가 (All / Raw Only / Processed / Upscaled)
   - 🚀 **Upscaled 필터:** 업스케일된 이미지만 빠르게 선택 가능
+- **v1.82**: CSV Generation Improvements
+  - 🔧 **업스케일 자동 CSV 제거:** 업스케일 완료 시 자동 CSV 생성 제거 (수동 버튼으로 제어)
+  - 📁 **JSON 경로 개선:** CSV 생성 시 상위 폴더 (generation root)에서 JSON 탐색
+  - 🔧 **UTF-8 BOM 지원:** PowerShell에서 생성한 JSON 파일 (BOM 포함) 정상 읽기
+  - 📊 **디버깅 로그:** CSV 생성 시 JSON 탐색 경로 콘솔 출력
 
 ---
 
