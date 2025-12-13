@@ -35,13 +35,10 @@ adobe-stock-generator/
 ├── generations/                # Output folder (timestamped)
 │   └── {timestamp}/
 │       ├── *.png               # Raw generated images
+│       ├── *.json              # JSON metadata (sidecar)
 │       ├── processed/          # 16:9 cropped images
-│       └── upscaled/           # 4K upscaled images
-├── submissions/                # Adobe Stock packages
-│   └── submission_{timestamp}/
-│       ├── *.png               # Final images
-│       ├── submission.csv      # Metadata CSV
-│       └── UPLOAD_INSTRUCTIONS.txt
+│       └── upscaled/           # 4K images + submission.csv
+├── submissions/                # (Legacy) Old submission packages
 ├── trash/                      # Deleted images
 ├── logs/                       # Processing logs
 └── start_dashboard.bat         # Windows launcher
@@ -75,7 +72,7 @@ Opens http://127.0.0.1:5001
 | **Select for Upscale** | Drag image → Right panel (Selection) |
 | **Delete Image** | Drag image → Left panel (Trash) |
 | **Upscale Selected** | Click "⚡ Upscale Selected" |
-| **Create Submission** | Click "📦 CSV Submission 생성" |
+| **Upload to Adobe** | Open `upscaled/` folder → `submission.csv` + images |
 
 ---
 
@@ -115,23 +112,25 @@ graph TD
     A -->|Prompts| B[AI Image Generator]
     B -->|Raw Images + JSON| C[Generations Folder]
     
-    subgraph "Dashboard (Flask)"
+    subgraph "Dashboard Flask"
         C -->|Load Drafts| D[UI Interface]
-        D -->|Select & Upscale| E[Job Queue]
+        D -->|Select and Upscale| E[Job Queue]
         E -->|Spawn| F[Isolated Subprocess]
     end
     
     subgraph "Worker Process"
         F -->|Load Model| G[Real-ESRGAN]
         G -->|Tile Processing| H[4K Image]
-        H -->|Memory Cleanup| I[GC / CUDA Empty]
+        H -->|Copy JSON| I[JSON Metadata]
+        I -->|Memory Cleanup| J[GC and CUDA Empty]
     end
     
-    I -->|Save| J[Upscaled Folder]
-    J -->|Review| D
-    D -->|Export| K[Submission Package]
+    J -->|Save to upscaled folder| K[Upscaled Folder]
+    K -->|Auto-generate| L[submission.csv]
+    L -->|Upload Ready| M(Adobe Stock)
     
-    K -->|CSV + Images| L(Adobe Stock)
+    style L fill:#90EE90
+    style K fill:#87CEEB
 ```
 
 ## 🔧 Key Technical Decisions & Optimizations
