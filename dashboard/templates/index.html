@@ -428,6 +428,13 @@
             <div class="column-header">
                 <span>🗂️ Drafts</span>
                 <div class="column-actions">
+                    <select id="filter-select" onchange="filterDrafts()"
+                        style="padding:4px 8px;font-size:0.7rem;border-radius:4px;background:#333;color:#fff;border:none;">
+                        <option value="all">📁 All</option>
+                        <option value="raw">🖼️ Raw Only</option>
+                        <option value="processed">✂️ Processed</option>
+                        <option value="upscaled">🚀 Upscaled</option>
+                    </select>
                     <select id="sort-select" onchange="sortDrafts()"
                         style="padding:4px 8px;font-size:0.7rem;border-radius:4px;background:#333;color:#fff;border:none;">
                         <option value="date-desc">📅 최신순</option>
@@ -502,17 +509,33 @@
             g.innerHTML = '';
             let drafts = allImages.filter(i => !selectedImages.has(i.id));
 
+            // Apply filter
+            const filterVal = document.getElementById('filter-select')?.value || 'all';
+            drafts = filterImageList(drafts, filterVal);
+
             // Apply sorting
             const sortVal = document.getElementById('sort-select')?.value || 'date-desc';
             drafts = sortImageList(drafts, sortVal);
 
             if (!drafts.length) {
-                g.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:20px;color:#555;">No draft images</p>';
+                g.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:20px;color:#555;">No images match filter</p>';
             } else {
                 drafts.forEach(img => g.appendChild(createDraftCard(img)));
             }
             document.getElementById('drafts-count').textContent = `${drafts.length} images`;
         }
+
+        function filterImageList(list, filterVal) {
+            switch (filterVal) {
+                case 'raw': return list.filter(i => !i.folder.includes('processed') && !i.folder.includes('upscaled'));
+                case 'processed': return list.filter(i => i.folder.includes('processed'));
+                case 'upscaled': return list.filter(i => i.folder.includes('upscaled'));
+                case 'all':
+                default: return list;
+            }
+        }
+
+        function filterDrafts() { renderDrafts(); }
 
         function sortImageList(list, sortVal) {
             const sorted = [...list];

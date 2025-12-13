@@ -248,6 +248,9 @@ pip install flask pillow opencv-python torch realesrgan
   - 🔧 **JSON 읽기 버그 수정:** `list_images()` API에서 `image_dir` 파라미터 누락 문제 해결
   - ⚠️ **JSON 누락 경고:** CSV 생성 시 JSON 없는 이미지에 대해 콘솔 경고 출력
   - 📊 **has_json 플래그:** 이미지 목록 API에서 JSON 메타데이터 존재 여부 표시
+- **v1.81**: UI Filter Dropdown
+  - 🎨 **필터 드롭다운:** Drafts 영역에 필터 추가 (All / Raw Only / Processed / Upscaled)
+  - 🚀 **Upscaled 필터:** 업스케일된 이미지만 빠르게 선택 가능
 
 ---
 
