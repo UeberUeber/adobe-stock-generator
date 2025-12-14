@@ -24,6 +24,7 @@ adobe-stock-generator/
 │       └── index.html          # Drag-and-drop dashboard UI
 ├── config/
 │   ├── prompt_config.md        # 📝 Editable prompt configuration
+│   ├── strategy_guide.md       # 📊 Power law strategy guide
 │   └── adobe_stock_guidelines.md # 📚 Metadata best practices & rules
 ├── visual_schema.py            # Visual attribute enums
 ├── prompt_engine.py            # Prompt construction logic
@@ -73,7 +74,7 @@ Opens http://127.0.0.1:5001
 | **Select for Upscale** | Drag image → Right panel (Selection) |
 | **Delete Image** | Drag image → Left panel (Trash) |
 | **Upscale Selected** | Click "⚡ Upscale Selected" |
-| **Generate CSV** | Select upscaled images → Click "📦 CSV 생성" |
+| **Generate CSV** | Select upscaled images → Click "📦 Create CSV" |
 | **Upload to Adobe** | Open `upscaled/` folder → Upload `submission.csv` + images |
 
 ---
@@ -105,37 +106,31 @@ Edit `config/prompt_config.md` to customize prompts. Changes are reflected autom
 
 ---
 
----
 ## 🏗️ System Architecture
 
 ```mermaid
-flowchart LR
-    subgraph Input
-        A[User/Agent] --> B[Prompt Engine]
-        B --> C[AI Image Generator]
-    end
-
-    subgraph Processing
-        C --> D[generations/timestamp/]
-        D --> E[JSON Metadata]
-        D --> F[Dashboard UI]
-        F --> G[Select Images]
-        G --> H[Upscale Queue]
-    end
-
-    subgraph Upscaling
-        H --> I[Subprocess]
-        I --> J[Real-ESRGAN]
-        J --> K[4K Output]
-    end
-
-    subgraph Output
-        K --> L[upscaled/]
-        L --> M[CSV Generation]
-        M --> N[submission.csv]
-        N --> O[Adobe Stock]
-    end
+flowchart TD
+    A[User / Agent] --> B[Prompt Engine]
+    B --> C[AI Image Generator]
+    C --> D[generations/timestamp/]
+    
+    D --> E[JSON Metadata]
+    D --> F[Dashboard UI]
+    
+    F --> G[Filter & Select]
+    G --> H[Upscale Queue]
+    
+    H --> I[Subprocess Worker]
+    I --> J[Real-ESRGAN 4x]
+    J --> K[4K Output]
+    
+    K --> L[upscaled/ folder]
+    L --> M[CSV Generation]
+    M --> N[submission.csv]
+    N --> O[Adobe Stock Upload]
 ```
+
+---
 
 ## 🔧 Key Technical Decisions & Optimizations
 
@@ -166,38 +161,36 @@ This project implements several advanced patterns to ensure stability and perfor
 
 ---
 
----
-
 ## 📊 Logging & Debugging
 
-로그 파일은 `logs/` 폴더에 저장되며, 문제 해결 및 퍼포먼스 분석에 활용합니다.
+Log files are stored in the `logs/` folder for troubleshooting and performance analysis.
 
 ### Log Files:
 
 | File | Purpose |
 |------|---------|
-| `logs/upscale.log` | 업스케일링 진행 상황, 시간 측정 |
-| `logs/error.log` | 에러 스택트레이스, 크래시 원인 분석 |
+| `logs/upscale.log` | Upscaling progress and timing |
+| `logs/error.log` | Error stack traces and crash analysis |
 
 ### When to Check Logs:
 
-1. **업스케일링 실패 시**: `error.log`에서 에러 원인 확인
-2. **속도 저하 시**: `upscale.log`에서 이미지당 처리 시간 분석
-3. **메모리 문제 시**: 타일 크기 조정 필요 여부 판단
+1. **Upscaling failure**: Check `error.log` for root cause
+2. **Slow performance**: Check `upscale.log` for per-image timing
+3. **Memory issues**: Determine if tile size adjustment is needed
 
 ### Performance Tuning:
 
-`generation_pipeline.py`의 `TILE_SIZE` 상수 조정:
+Adjust `TILE_SIZE` constant in `generation_pipeline.py`:
 ```python
-# 512: 빠름, VRAM 많이 사용 (8GB+ 필요)
-# 384: 균형, VRAM 중간 (~6GB) - 권장
-# 256: 느림 (~50% 증가), VRAM 적게 사용 (~4GB)
+# 512: Fast, high VRAM usage (8GB+ required)
+# 384: Balanced, medium VRAM (~6GB) - Recommended
+# 256: Slow (~50% increase), low VRAM (~4GB)
 TILE_SIZE = 384
 ```
 
 ### Clearing Logs:
-- 대시보드 UI에서 "Clear Logs" 버튼 사용
-- 또는 `logs/upscale.log`, `logs/error.log` 직접 삭제
+- Use "Clear Logs" button in dashboard UI
+- Or manually delete `logs/upscale.log`, `logs/error.log`
 
 ---
 
@@ -229,53 +222,57 @@ pip install flask pillow opencv-python torch realesrgan
   - 🔧 Fixed torchvision 0.16+ compatibility (monkey patch)
   - 🔧 Fixed memory leak during upscaling (`del` + `torch.cuda.empty_cache()`)
   - ✨ Upscale progress display: `[m/n]` format
-  - ✨ "모두 완료!" completion message
+  - ✨ Completion message on finish
   - ✨ Auto-open upscaled folder on completion
   - ✨ Log Clear button in dashboard
   - 🚀 Auto-generate submission package after upscale
 - **v1.5**: JSON Sidecar Metadata System
-  - ✨ **새 모듈:** `prompt_metadata.py` - 프롬프트에서 메타데이터 자동 추출
-  - ✨ **JSON 사이드카:** 이미지마다 `.json` 메타데이터 파일 생성
-  - 🔧 **CSV 개선:** JSON 파일 우선 로드, 없으면 파일명에서 추론
-  - 📚 **지식 베이스:** `config/adobe_stock_guidelines.md` 가이드라인 문서
-  - 🔧 **메타데이터 품질:** 제네릭 템플릿 제거, 파일명 기반 제목 생성
-  - ✅ **22개 카테고리:** Adobe Stock 전체 카테고리 지원
-- **v1.6**: Stability & Memory Optimization - 🚀 **Subprocess Isolation:** Upscaling runs in a separate process, preventing dashboard crashes - 🔧 **Memory Optimization:** Model load/unload per image, aggressive `gc.collect()` - ⚙️ **Tile Size:** Reduced to 384 (Lower VRAM usage) - 📊 **Error Logging:** Separate `logs/error.log` with stack traces
+  - ✨ New module: `prompt_metadata.py` - auto-extract metadata from prompts
+  - ✨ JSON sidecar: Generate `.json` metadata file per image
+  - 🔧 CSV improvement: Load JSON first, fallback to filename inference
+  - 📚 Knowledge base: `config/adobe_stock_guidelines.md` documentation
+  - 🔧 Metadata quality: Remove generic templates, filename-based titles
+  - ✅ 22 categories: Full Adobe Stock category support
+- **v1.6**: Stability & Memory Optimization
+  - 🚀 Subprocess Isolation: Upscaling runs in separate process, preventing dashboard crashes
+  - 🔧 Memory Optimization: Model load/unload per image, aggressive `gc.collect()`
+  - ⚙️ Tile Size: Reduced to 384 (Lower VRAM usage)
+  - 📊 Error Logging: Separate `logs/error.log` with stack traces
 - **v1.7**: UI/UX & Monitoring Improvements
-  - 🎨 **UI Cleanup:** Selection panel action buttons moved to header (consistent layout)
-  - ⏱️ **Real-time Monitoring:** Upscale progress and errors shown in dashboard logs instantly
-  - 🔧 **Pipe Fix:** Resolved partial logs by flushing stdout and draining pipes
-  - 🔧 **Compatibility:** Fixed `torchvision` import error in isolated subprocess
+  - 🎨 UI Cleanup: Selection panel action buttons moved to header (consistent layout)
+  - ⏱️ Real-time Monitoring: Upscale progress and errors shown in dashboard logs instantly
+  - 🔧 Pipe Fix: Resolved partial logs by flushing stdout and draining pipes
+  - 🔧 Compatibility: Fixed `torchvision` import error in isolated subprocess
 - **v1.8**: CSV Simplification & Metadata Flow Fix
-  - 🔧 **CSV 직접 생성:** `upscaled/` 폴더에 `submission.csv` 직접 생성 (별도 submissions 폴더 불필요)
-  - 🔧 **JSON 복사 버그 수정:** 업스케일 시 JSON 메타데이터 파일을 `upscaled/` 폴더로 자동 복사
-  - 🔧 **JSON 읽기 버그 수정:** `list_images()` API에서 `image_dir` 파라미터 누락 문제 해결
-  - ⚠️ **JSON 누락 경고:** CSV 생성 시 JSON 없는 이미지에 대해 콘솔 경고 출력
-  - 📊 **has_json 플래그:** 이미지 목록 API에서 JSON 메타데이터 존재 여부 표시
+  - 🔧 Direct CSV: Generate `submission.csv` directly in `upscaled/` folder
+  - 🔧 JSON copy fix: Auto-copy JSON metadata to `upscaled/` folder during upscale
+  - 🔧 JSON read fix: Resolve `image_dir` parameter missing in `list_images()` API
+  - ⚠️ JSON warning: Console warning for images missing JSON during CSV generation
+  - 📊 has_json flag: Show JSON metadata existence in image list API
 - **v1.81**: UI Filter Dropdown
-  - 🎨 **필터 드롭다운:** Drafts 영역에 필터 추가 (All / Raw Only / Processed / Upscaled)
-  - 🚀 **Upscaled 필터:** 업스케일된 이미지만 빠르게 선택 가능
+  - 🎨 Filter dropdown: Add filter to Drafts area (All / Raw Only / Processed / Upscaled)
+  - 🚀 Upscaled filter: Quick selection of upscaled images only
 - **v1.82**: CSV Generation Improvements
-  - 🔧 **업스케일 자동 CSV 제거:** 업스케일 완료 시 자동 CSV 생성 제거 (수동 버튼으로 제어)
-  - 📁 **JSON 경로 개선:** CSV 생성 시 상위 폴더 (generation root)에서 JSON 탐색
-  - 🔧 **UTF-8 BOM 지원:** PowerShell에서 생성한 JSON 파일 (BOM 포함) 정상 읽기
-  - 📊 **디버깅 로그:** CSV 생성 시 JSON 탐색 경로 콘솔 출력
+  - 🔧 Remove auto CSV: Remove auto CSV generation on upscale completion (manual button control)
+  - 📁 JSON path improvement: Search JSON from parent folder (generation root) during CSV generation
+  - 🔧 UTF-8 BOM support: Handle JSON files with BOM (created by PowerShell)
+  - 📊 Debug logs: Console output of JSON search paths during CSV generation
 - **v1.83**: Workflow Documentation & Metadata Improvements
-  - 🤖 **워크플로우 강화:** 에이전트가 `view_file`로 이미지를 직접 분석 후 JSON 생성 (필수)
-  - ⛔ **체크포인트 추가:** 이미지 분석 단계에 필수 체크리스트 표 추가 (건너뛰기 방지)
-  - 📊 **키워드 확장:** 권장 키워드 개수 25-35개로 상향 조정
-  - 🔧 **자동화 코드 제거:** Python 기반 AI 자동 재생성 로직 제거 (에이전트 직접 수행으로 전환)
-  - 📚 **키워드 사전 확장:** Subject, Style, Lighting, Color 사전 각 30개 이상으로 확장 (폴백 품질 개선)
-  - ⚠️ **누락 경고 강화:** JSON 누락 시 콘솔 경고 + CSV 생성 결과에 개수 표시
+  - 🤖 Workflow enhancement: Agent must analyze images with `view_file` before JSON creation
+  - ⛔ Checkpoint added: Mandatory checklist table in image analysis step
+  - 📊 Keyword expansion: Recommended keyword count increased to 25-35
+  - 🔧 Automation removal: Remove Python-based AI auto-regeneration (agent performs directly)
+  - 📚 Dictionary expansion: Subject, Style, Lighting, Color dictionaries expanded to 30+ items
+  - ⚠️ Warning enhancement: Console warning + count display for missing JSONs
 - **v1.84**: Power Law Strategy Integration
-  - 📊 **전략 가이드:** `config/strategy_guide.md` 추가 (멱법칙 기반 Adobe Stock 전략)
-  - 🎯 **바벨 전략:** 에버그린 60% / 시즌성 30% / 트렌드 10% 포트폴리오 배분
-  - 📅 **시즌 캘린더:** 업로드 타이밍 가이드 (2~3개월 선행)
-  - 🔗 **워크플로우 연동:** 전략 가이드 참조 추가
+  - 📊 Strategy guide: Add `config/strategy_guide.md` (power law based Adobe Stock strategy)
+  - 🎯 Barbell strategy: Evergreen 60% / Seasonal 30% / Trending 10% portfolio allocation
+  - 📅 Season calendar: Upload timing guide (2-3 months ahead)
+  - 🔗 Workflow integration: Add strategy guide reference
 - **v1.85**: Category Mapping & UI Fix
-  - 🔧 **카테고리 맵핑 수정:** `adobe_stock_guidelines.md` 카테고리 ID 오류 수정 (21개 전체 테이블)
-  - 🎯 **카테고리 선택 가이드:** 이미지 유형별 올바른 카테고리 매핑 가이드라인 추가
-  - 🐛 **Select All 버그 수정:** 필터 적용 시 보이는 이미지만 선택하도록 수정
+  - 🔧 Category mapping fix: Fix category ID errors in `adobe_stock_guidelines.md` (21 full categories)
+  - 🎯 Category selection guide: Add correct category mapping guidelines by image type
+  - 🐛 Select All bug fix: Only select visible filtered images
 
 ---
 
@@ -305,86 +302,76 @@ Once images are in the folder, simply **refresh the Dashboard** to see them in "
 
 ## 🔄 Complete Workflow: Image → JSON → CSV
 
-이 프로젝트의 핵심 워크플로우입니다. 에이전트(Antigravity)가 이미지 생성부터 메타데이터 생성까지 모든 과정을 수행합니다.
+This is the core workflow of the project. The agent (Antigravity) performs the entire process from image generation to metadata creation.
 
-### 프로세스 플로우차트
+### Process Flowchart
 
 ```mermaid
 flowchart TD
-    subgraph "1️⃣ 이미지 생성 (에이전트)"
-        A[사용자 요청] --> B[prompt_config.md 읽기]
-        B --> C[프롬프트 구성]
-        C --> D[generate_image 호출]
-        D --> E[이미지 생성됨]
+    subgraph Step1["1. Image Generation (Agent)"]
+        A[User Request] --> B[Read prompt_config.md]
+        B --> C[Compose Prompt]
+        C --> D[Call generate_image]
+        D --> E[Image Created]
     end
 
-    subgraph "2️⃣ 이미지 분석 (에이전트) - 필수!"
-        E --> F[view_file로 이미지 분석]
-        F --> G{체크포인트 표 작성}
-        G -->|오브젝트| H[분석 결과]
-        G -->|배경/장소| H
-        G -->|분위기| H
-        G -->|색상| H
-        G -->|조명| H
-        G -->|구도| H
+    subgraph Step2["2. Image Analysis (Agent) - Required!"]
+        E --> F[Analyze with view_file]
+        F --> G{Fill Checkpoint Table}
+        G --> H[Analysis Results]
     end
 
-    subgraph "3️⃣ JSON 메타데이터 생성 (에이전트)"
-        H --> I[adobe_stock_guidelines.md 참조]
-        I --> J[Title 작성: 70자 이내]
-        I --> K[Keywords 작성: 25-35개]
-        I --> L[Category 선택: 1-21]
-        J & K & L --> M[write_to_file로 JSON 저장]
+    subgraph Step3["3. JSON Metadata Creation (Agent)"]
+        H --> I[Reference adobe_stock_guidelines.md]
+        I --> J[Write Title: max 70 chars]
+        I --> K[Write Keywords: 25-35 items]
+        I --> L[Select Category: 1-21]
+        J & K & L --> M[Save JSON with write_to_file]
     end
 
-    subgraph "4️⃣ 파일 저장"
+    subgraph Step4["4. File Organization"]
         M --> N[generations/timestamp/image.png]
         M --> O[generations/timestamp/image.json]
     end
 
-    subgraph "5️⃣ 대시보드 (Python)"
-        N & O --> P[Dashboard 새로고침]
+    subgraph Step5["5. Dashboard (Python)"]
+        N & O --> P[Refresh Dashboard]
         P --> Q[Upscale Selected]
-        Q --> R[upscaled/ 폴더 생성]
-        R --> S[CSV 생성 버튼]
-        S --> T{JSON 있음?}
-        T -->|Yes| U[JSON에서 메타데이터 읽기]
-        T -->|No| V[⚠️ 경고 + 파일명 추론]
-        U & V --> W[submission.csv 생성]
+        Q --> R[Create upscaled/ folder]
+        R --> S[CSV Generation Button]
+        S --> T{JSON exists?}
+        T -->|Yes| U[Read metadata from JSON]
+        T -->|No| V[Warning + Filename inference]
+        U & V --> W[Generate submission.csv]
     end
 
-    W --> X[Adobe Stock 업로드]
-
-    style F fill:#FFD700,stroke:#333,stroke-width:2px
-    style G fill:#FF6B6B,stroke:#333,stroke-width:2px
-    style M fill:#90EE90,stroke:#333,stroke-width:2px
-    style T fill:#87CEEB,stroke:#333,stroke-width:2px
+    W --> X[Upload to Adobe Stock]
 ```
 
-### 에이전트 수행 단계 상세
+### Agent Execution Steps
 
-| 단계 | 도구 | 설명 |
-|------|------|------|
-| 1. 프롬프트 구성 | `view_file` | `config/prompt_config.md`에서 스타일, 품질 부스터 확인 |
-| 2. 이미지 생성 | `generate_image` | AI 이미지 생성기 호출 |
-| 3. 이미지 분석 | `view_file` | **생성된 이미지를 직접 보고 시각적 요소 추출** |
-| 4. JSON 생성 | `write_to_file` | 분석 결과 기반 메타데이터 파일 생성 |
-| 5. 파일 이동 | `run_command` | `generations/{timestamp}/` 폴더로 정리 |
+| Step | Tool | Description |
+|------|------|-------------|
+| 1. Compose Prompt | `view_file` | Check styles and quality boosters from `config/prompt_config.md` |
+| 2. Generate Image | `generate_image` | Call AI image generator |
+| 3. Analyze Image | `view_file` | **Directly view generated image and extract visual elements** |
+| 4. Create JSON | `write_to_file` | Generate metadata file based on analysis |
+| 5. Organize Files | `run_command` | Move to `generations/{timestamp}/` folder |
 
-### 체크포인트 표 (4단계 필수)
+### Checkpoint Table (Required for Step 3)
 
-에이전트는 이미지 분석 시 반드시 아래 표를 채워야 합니다:
+Agent must fill this table during image analysis:
 
-| 항목 | 분석 결과 |
-|------|----------|
-| 오브젝트 | 이미지에 보이는 주요 물체/인물 |
-| 배경/장소 | 실내/실외, 구체적 장소 |
-| 분위기 | 감정, 느낌, 톤 |
-| 색상 | 지배적 색상, 색상 조화 |
-| 조명 | 자연광/인공광, 방향, 강도 |
-| 구도 | 앵글, 프레이밍, 구성 |
+| Item | Analysis Result |
+|------|-----------------|
+| Objects | Main objects/people visible in image |
+| Background/Location | Indoor/outdoor, specific location |
+| Mood | Emotion, feeling, tone |
+| Colors | Dominant colors, color harmony |
+| Lighting | Natural/artificial, direction, intensity |
+| Composition | Angle, framing, structure |
 
-### JSON 메타데이터 형식
+### JSON Metadata Format
 
 ```json
 {
@@ -406,22 +393,21 @@ flowchart TD
 }
 ```
 
-### CSV 생성 로직 (Python)
+### CSV Generation Logic (Python)
 
-`dashboard/app.py`의 `get_metadata_for_file()` 함수:
+`dashboard/app.py` `get_metadata_for_file()` function:
 
-1. **JSON 우선:** `{image_name}.json` 파일 존재 확인 → 있으면 읽어서 사용
-2. **폴백:** JSON 없으면 경고 로그 출력 + `metadata_generator.py`로 파일명 기반 추론
-3. **결과 표시:** CSV 생성 시 JSON 누락 개수 집계 후 사용자에게 ⚠️ 메시지 표시
+1. **JSON Priority:** Check if `{image_name}.json` exists → read and use if available
+2. **Fallback:** If no JSON, log warning + infer from filename via `metadata_generator.py`
+3. **Result Display:** Aggregate missing JSON count and show ⚠️ message to user
 
 ---
 
-## 📋 워크플로우 파일 위치
+## 📋 Workflow File Locations
 
-| 파일 | 용도 |
-|------|------|
-| `.agent/workflows/generate-stock-image.md` | 에이전트 실행 워크플로우 (7단계) |
-| `config/strategy_guide.md` | 📊 **멱법칙 기반 전략 가이드** |
-| `config/prompt_config.md` | 프롬프트 구성 요소 |
-| `config/adobe_stock_guidelines.md` | Adobe Stock 메타데이터 규칙 |
-
+| File | Purpose |
+|------|---------|
+| `.agent/workflows/generate-stock-image.md` | Agent execution workflow (7 steps) |
+| `config/strategy_guide.md` | 📊 **Power law based strategy guide** |
+| `config/prompt_config.md` | Prompt configuration elements |
+| `config/adobe_stock_guidelines.md` | Adobe Stock metadata rules |
