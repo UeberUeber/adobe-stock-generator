@@ -109,41 +109,32 @@ Edit `config/prompt_config.md` to customize prompts. Changes are reflected autom
 ## 🏗️ System Architecture
 
 ```mermaid
-graph TD
-    User([User / Agent]) -->|1. Generate Prompts| A[Prompt Engine]
-    A -->|Prompts| B[AI Image Generator]
-    B -->|Raw Images| C[Generations Folder]
-    
-    subgraph "Metadata Creation"
-        C -->|Analyze Image| D[JSON Sidecar]
-        D -->|title, keywords, category| C
+flowchart LR
+    subgraph Input
+        A[User/Agent] --> B[Prompt Engine]
+        B --> C[AI Image Generator]
     end
-    
-    subgraph "Dashboard Flask"
-        C -->|Load Drafts| E[UI Interface]
-        E -->|Filter: Raw/Processed/Upscaled| E
-        E -->|Select and Upscale| F[Job Queue]
-        F -->|Spawn| G[Isolated Subprocess]
+
+    subgraph Processing
+        C --> D[generations/timestamp/]
+        D --> E[JSON Metadata]
+        D --> F[Dashboard UI]
+        F --> G[Select Images]
+        G --> H[Upscale Queue]
     end
-    
-    subgraph "Worker Process"
-        G -->|Load Model| H[Real-ESRGAN]
-        H -->|Tile Processing| I[4K Image]
-        I -->|Memory Cleanup| J[GC and CUDA Empty]
+
+    subgraph Upscaling
+        H --> I[Subprocess]
+        I --> J[Real-ESRGAN]
+        J --> K[4K Output]
     end
-    
-    J -->|Save| K[Upscaled Folder]
-    
-    subgraph "CSV Generation"
-        K -->|User clicks CSV button| L[Read JSON from parent folder]
-        L -->|Generate| M[submission.csv]
+
+    subgraph Output
+        K --> L[upscaled/]
+        L --> M[CSV Generation]
+        M --> N[submission.csv]
+        N --> O[Adobe Stock]
     end
-    
-    M -->|Upload Ready| N(Adobe Stock)
-    
-    style M fill:#90EE90
-    style K fill:#87CEEB
-    style D fill:#FFD700
 ```
 
 ## 🔧 Key Technical Decisions & Optimizations
@@ -276,6 +267,15 @@ pip install flask pillow opencv-python torch realesrgan
   - 🔧 **자동화 코드 제거:** Python 기반 AI 자동 재생성 로직 제거 (에이전트 직접 수행으로 전환)
   - 📚 **키워드 사전 확장:** Subject, Style, Lighting, Color 사전 각 30개 이상으로 확장 (폴백 품질 개선)
   - ⚠️ **누락 경고 강화:** JSON 누락 시 콘솔 경고 + CSV 생성 결과에 개수 표시
+- **v1.84**: Power Law Strategy Integration
+  - 📊 **전략 가이드:** `config/strategy_guide.md` 추가 (멱법칙 기반 Adobe Stock 전략)
+  - 🎯 **바벨 전략:** 에버그린 60% / 시즌성 30% / 트렌드 10% 포트폴리오 배분
+  - 📅 **시즌 캘린더:** 업로드 타이밍 가이드 (2~3개월 선행)
+  - 🔗 **워크플로우 연동:** 전략 가이드 참조 추가
+- **v1.85**: Category Mapping & UI Fix
+  - 🔧 **카테고리 맵핑 수정:** `adobe_stock_guidelines.md` 카테고리 ID 오류 수정 (21개 전체 테이블)
+  - 🎯 **카테고리 선택 가이드:** 이미지 유형별 올바른 카테고리 매핑 가이드라인 추가
+  - 🐛 **Select All 버그 수정:** 필터 적용 시 보이는 이미지만 선택하도록 수정
 
 ---
 
