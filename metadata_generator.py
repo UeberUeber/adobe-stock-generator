@@ -239,53 +239,161 @@ TREND_METADATA = {
     },
 }
 
+
 SUBJECT_KEYWORDS = {
-    "People": ["people", "person", "human", "adult", "model", "portrait", "lifestyle", "diversity", "authentic"],
-    "Nature": ["nature", "outdoor", "environment", "landscape", "scenery", "natural", "beauty", "earth", "green"],
-    "Technology": ["technology", "tech", "digital", "electronic", "device", "innovation", "future", "modern", "smart"],
-    "Business": ["business", "corporate", "professional", "office", "work", "job", "career", "success", "finance"],
-    "Abstract": ["abstract", "art", "artistic", "design", "pattern", "shape", "color", "concept", "creative"],
-    "Food": ["food", "delicious", "tasty", "gourmet", "meal", "dish", "healthy", "fresh", "eating", "cuisine"],
-    "Science & Tech": ["science", "technology", "research", "lab", "data", "analysis", "innovation", "futuristic"],
-    "Nature & Outdoors": ["nature", "outdoors", "landscape", "sky", "view", "environment", "travel", "adventure"],
-    "People & Lifestyle": ["lifestyle", "people", "living", "life", "everyday", "authentic", "candid", "real"],
-    "Abstract & Textures": ["abstract", "texture", "surface", "background", "pattern", "design", "material"],
-    "Business & Work": ["business", "work", "office", "professional", "corporate", "team", "success", "strategy"],
+    "People": [
+        "people", "person", "human", "adult", "model", "portrait", "lifestyle", "diversity", "authentic",
+        "candid", "real people", "natural", "emotion", "expression", "looking at camera", "waist up",
+        "front view", "casual", "modern", "individual", "identity", "society", "community", "social",
+        "interaction", "daily life", "routine", "human being", "character", "pose", "gesture"
+    ],
+    "Nature": [
+        "nature", "outdoor", "environment", "landscape", "scenery", "natural", "beauty", "earth", "green",
+        "sky", "view", "wilderness", "peaceful", "calm", "serene", "tranquil", "scenic", "beautiful",
+        "background", "season", "climate", "ecology", "organic", "fresh", "air", "atmosphere", "horizon",
+        "panoramic", "wild", "conservation", "eco-friendly", "sustainable", "clean", "outside"
+    ],
+    "Technology": [
+        "technology", "tech", "digital", "electronic", "device", "innovation", "future", "modern", "smart",
+        "connection", "network", "data", "information", "internet", "screen", "display", "communication",
+        "wireless", "software", "hardware", "computing", "cyber", "virtual", "automation", "advanced",
+        "futuristic", "science", "research", "development", "system", "interface", "app", "online"
+    ],
+    "Business": [
+        "business", "corporate", "professional", "office", "work", "job", "career", "success", "finance",
+        "strategy", "planning", "management", "team", "growth", "development", "meeting", "collaboration",
+        "worker", "employee", "executive", "entrepreneur", "startup", "industry", "commerce", "market",
+        "economy", "financial", "investment", "idea", "concept", "goal", "achievement", "occupation"
+    ],
+    "Abstract": [
+        "abstract", "art", "artistic", "design", "pattern", "shape", "color", "concept", "creative",
+        "background", "texture", "backdrop", "graphic", "illustration", "modern", "composition", "style",
+        "element", "decoration", "wallpaper", "template", "layout", "geometric", "digital art", "surreal",
+        "fantasy", "imagination", "dream", "vision", "futuristic", "contemporary", "minimal"
+    ],
+    "Food": [
+        "food", "delicious", "tasty", "gourmet", "meal", "dish", "healthy", "fresh", "eating", "cuisine",
+        "diet", "nutrition", "cooked", "ingredient", "recipe", "snack", "dinner", "lunch", "breakfast",
+        "organic", "homemade", "culinary", "gastronomy", "restaurant", "dining", "menu", "close-up",
+        "table", "plate", "serving", "appetizer", "dessert", "vegetable", "fruit", "beverage"
+    ],
+    "Science & Tech": [
+        "science", "technology", "research", "lab", "data", "analysis", "innovation", "futuristic",
+        "laboratory", "experiment", "medical", "biology", "chemistry", "physics", "biotechnology", "DNA",
+        "microscope", "scientific", "study", "education", "discovery", "progress", "development", "cyber",
+        "artificial intelligence", "robotics", "automation", "engineering", "technical", "digital world"
+    ],
+    "Nature & Outdoors": [
+        "nature", "outdoors", "landscape", "sky", "view", "environment", "travel", "adventure",
+        "exploring", "hiking", "vacation", "tourism", "destination", "summer", "sunny", "day", "light",
+        "park", "forest", "mountain", "sea", "ocean", "water", "river", "lake", "beach", "sand", "grass",
+        "tree", "flower", "plant", "garden", "field", "meadow", "cloud", "sun", "sunset", "sunrise"
+    ],
+    "People & Lifestyle": [
+        "lifestyle", "people", "living", "life", "everyday", "authentic", "candid", "real",
+        "happiness", "joy", "smile", "fun", "leisure", "relaxation", "enjoying", "together", "family",
+        "friends", "couple", "love", "relationship", "health", "wellness", "wellbeing", "active",
+        "activity", "hobby", "free time", "weekend", "holiday", "home", "house", "indoors"
+    ],
+    "Abstract & Textures": [
+        "abstract", "texture", "surface", "background", "pattern", "design", "material",
+        "detail", "close-up", "macro", "rough", "smooth", "grain", "wall", "floor", "fabric", "textile",
+        "paper", "wood", "stone", "metal", "concrete", "grunge", "vintage", "retro", "old", "structure",
+        "quality", "high resolution", "full frame", "copy space", "empty", "blank"
+    ],
+    "Business & Work": [
+        "business", "work", "office", "professional", "corporate", "team", "success", "strategy",
+        "working", "job", "career", "workplace", "desk", "computer", "laptop", "document", "report",
+        "meeting", "conference", "presentation", "discussion", "leader", "manager", "staff", "company",
+        "organization", "finance", "money", "profit", "marketing", "sales", "consulting"
+    ],
 }
 
 STYLE_KEYWORDS = {
-    "Photorealistic": ["realistic", "photo", "photography", "high quality", "detailed", "sharp"],
-    "3D Render": ["3d", "render", "digital art", "illustration", "cgi", "computer generated", "dimensional"],
-    "Minimalist": ["minimalist", "minimal", "simple", "clean", "modern", "less is more", "uncluttered"],
-    "Vector/Flat Art": ["vector", "flat", "illustration", "graphic", "design", "art", "drawing"],
-    "Cinematic": ["cinematic", "film", "movie", "dramatic", "scene", "story", "composition"],
-    "Futuristic": ["futuristic", "future", "sci-fi", "advanced", "modern", "tech", "innovation"],
-    "Realistic Photography": ["photography", "photo", "image", "pic", "shot", "capture", "realistic"],
-    "3D Digital Art": ["3d", "digital", "art", "render", "creative", "design", "virtua"],
-    "Scandinavian Interior": ["scandinavian", "nordic", "interior", "design", "home", "decor", "style"],
+    "Photorealistic": [
+        "realistic", "photo", "photography", "high quality", "detailed", "sharp",
+        "photorealistic", "8k", "ultra detailed", "hyperrealistic", "raw", "dslr", "professional",
+        "clear", "vivid", "lifelike", "authentic", "genuine", "natural looking", "high resolution"
+    ],
+    "3D Render": [
+        "3d", "render", "digital art", "illustration", "cgi", "computer generated", "dimensional",
+        "3d rendering", "visualization", "graphics", "design", "model", "virtual", "geometric", "shapes",
+        "surreal", "fantasy", "creative", "artistic", "composition", "modern art", "futuristic"
+    ],
+    "Minimalist": [
+        "minimalist", "minimal", "simple", "clean", "modern", "less is more", "uncluttered",
+        "simplicity", "white space", "negative space", "copy space", "plain", "basic", "essential",
+        "pure", "neat", "tidy", "organized", "flat", "smooth", "soft", "light", "airy", "spacious"
+    ],
+    "Vector/Flat Art": [
+        "vector", "flat", "illustration", "graphic", "design", "art", "drawing",
+        "2d", "cartoon", "icon", "symbol", "logo", "shape", "line", "color", "colorful", "pop art",
+        "modern design", "graphic design", "creative art", "digital illustration", "artwork"
+    ],
+    "Cinematic": [
+        "cinematic", "film", "movie", "dramatic", "scene", "story", "composition",
+        "film look", "movie style", "atmospheric", "moody", "storytelling", "narrative", "wide angle",
+        "anamorphic", "depth of field", "bokeh", "focus", "perspective", "epic", "grand", "impressive"
+    ],
+    "Futuristic": [
+        "futuristic", "future", "sci-fi", "advanced", "modern", "tech", "innovation",
+        "science fiction", "cyber", "technology", "space", "robot", "ai", "virtual reality", "metaverse",
+        "hologram", "neon", "glowing", "cyberpunk", "high tech", "digital era", "tomorrow", "concept"
+    ],
+    "Realistic Photography": [
+        "photography", "photo", "image", "pic", "shot", "capture", "realistic",
+        "photograph", "snapshot", "picture", "full color", "high definition", "clarity", "focus",
+        "perspective", "angle", "view", "scene", "composition", "lighting", "exposure"
+    ],
+    "3D Digital Art": [
+        "3d", "digital", "art", "render", "creative", "design", "virtual",
+        "digital artwork", "cgi illustration", "3d model", "abstract art", "conceptual", "imaginative",
+        "dreamlike", "fantasy world", "visual", "graphic art", "modern illustration"
+    ],
+    "Scandinavian Interior": [
+        "scandinavian", "nordic", "interior", "design", "home", "decor", "style",
+        "minimal", "cozy", "hygge", "light", "wooden", "furniture", "clean lines", "modern living",
+        "beige", "neutral colors", "warm", "inviting", "comfortable", "living room", "bedroom", "apartment"
+    ],
 }
 
 LIGHTING_KEYWORDS = {
-    "Natural Sunlight": ["natural light", "sunlight", "sun", "day", "daylight", "bright", "sunny"],
-    "Studio Lighting": ["studio", "lighting", "professional", "controlled", "bright", "clear"],
-    "Neon/Cyberpunk": ["neon", "glow", "light", "color", "colorful", "dark", "night"],
-    "Golden Hour": ["golden hour", "sunset", "sunrise", "warm", "light", "beautiful", "glow"],
-    "Neon Cyberpunk": ["neon", "cyberpunk", "glow", "vibrant", "electric", "night"],
-    "Natural Soft": ["soft", "light", "gentle", "diffused", "calm", "pleasant"],
-    "Dramatic High Contrast": ["dramatic", "contrast", "shadow", "light", "dark", "moody", "intense"],
-    "Warm Golden Hour": ["warm", "golden", "glow", "sun", "light", "atmosphere"],
+    "Natural Sunlight": [
+        "natural light", "sunlight", "sun", "day", "daylight", "bright", "sunny",
+        "sunshine", "rays", "sunbeam", "warmth", "morning", "afternoon", "outdoor lighting", "clear sky",
+        "radiant", "illuminated", "shining", "glow", "golden", "summer light"
+    ],
+    "Studio Lighting": [
+        "studio", "lighting", "professional", "controlled", "bright", "clear",
+        "studio shot", "artificial light", "softbox", "flash", "strobe", "high key", "white background",
+        "isolated", "product photography", "clean lighting", "even lighting", "perfect lighting"
+    ],
+    "Neon/Cyberpunk": [
+        "neon", "glow", "light", "color", "colorful", "dark", "night",
+        "fluorescent", "vibrant colors", "electric", "cyberpunk style", "nightlife", "urban lights",
+        "city lights", "purple", "pink", "blue", "futuristic lighting", "contrast", "dramatic light"
+    ],
+    "Golden Hour": [
+        "golden hour", "sunset", "sunrise", "warm", "light", "beautiful", "glow",
+        "dusk", "dawn", "evening", "magic hour", "sun setting", "sun rising", "silhouette", "orange",
+        "red", "yellow", "atmospheric", "romantic", "dreamy", "soft light", "backlight"
+    ],
+    "Neon Cyberpunk": ["neon", "cyberpunk", "glow", "vibrant", "electric", "night", "futuristic", "retrowave", "synthwave"],
+    "Natural Soft": ["soft", "light", "gentle", "diffused", "calm", "pleasant", "window light", "cloudy", "overcast", "shadowless"],
+    "Dramatic High Contrast": ["dramatic", "contrast", "shadow", "light", "dark", "moody", "intense", "chiaroscuro", "silhouette", "mystery"],
+    "Warm Golden Hour": ["warm", "golden", "glow", "sun", "light", "atmosphere", "cosy", "inviting", "heat", "summer evening"],
 }
 
 COLOR_KEYWORDS = {
-    "Vibrant & Saturated": ["vibrant", "colorful", "color", "bright", "saturated", "vivid", "rich"],
-    "Pastel & Soft": ["pastel", "soft", "color", "gentle", "pale", "light", "delicate"],
-    "Earth Tones": ["earth", "tone", "natural", "brown", "green", "beige", "neutral"],
-    "Monochromatic": ["monochromatic", "single color", "tone", "shade", "unified", "simple"],
-    "Dark with Neon Accents": ["dark", "black", "neon", "contrast", "glow", "light"],
-    "Vibrant Neon": ["neon", "vibrant", "bright", "glowing", "electric", "color"],
-    "Bold Contrast": ["bold", "contrast", "strong", "striking", "impact"],
-    "Pastel Dream": ["pastel", "dream", "soft", "color", "fantasy", "light"],
-    "Warm Cozy": ["warm", "cozy", "inviting", "home", "comfort", "color"],
+    "Vibrant & Saturated": ["vibrant", "colorful", "color", "bright", "saturated", "vivid", "rich", "bold", "dynamic", "energetic"],
+    "Pastel & Soft": ["pastel", "soft", "color", "gentle", "pale", "light", "delicate", "muted", "subtle", "sweet", "dreamy"],
+    "Earth Tones": ["earth", "tone", "natural", "brown", "green", "beige", "neutral", "organic", "sand", "terracotta", "warm grey"],
+    "Monochromatic": ["monochromatic", "single color", "tone", "shade", "unified", "simple", "black and white", "grayscale", "sepia"],
+    "Dark with Neon Accents": ["dark", "black", "neon", "contrast", "glow", "light", "night", "mystery", "cool", "modern"],
+    "Vibrant Neon": ["neon", "vibrant", "bright", "glowing", "electric", "color", "pop", "visual", "intense", "luminous"],
+    "Bold Contrast": ["bold", "contrast", "strong", "striking", "impact", "black and white", "opposites", "graphic", "sharp"],
+    "Pastel Dream": ["pastel", "dream", "soft", "color", "fantasy", "light", "fairy", "candy", "sweet", "romantic"],
+    "Warm Cozy": ["warm", "cozy", "inviting", "home", "comfort", "color", "autumn", "fall", "orange", "yellow", "brown"],
 }
 
 
@@ -402,6 +510,9 @@ class MetadataGenerator:
                     print(f"Warning: Could not load JSON metadata: {e}")
         
         # === FALLBACK: Parse filename patterns ===
+        # NOTE: If JSON is missing, the proper solution is for the agent to
+        # run `view_file` on the image and regenerate the JSON manually.
+        # This fallback is only for legacy compatibility.
         fname_lower = filename.lower()
         
         # Default implicit values

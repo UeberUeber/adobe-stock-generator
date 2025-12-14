@@ -269,6 +269,13 @@ pip install flask pillow opencv-python torch realesrgan
   - 📁 **JSON 경로 개선:** CSV 생성 시 상위 폴더 (generation root)에서 JSON 탐색
   - 🔧 **UTF-8 BOM 지원:** PowerShell에서 생성한 JSON 파일 (BOM 포함) 정상 읽기
   - 📊 **디버깅 로그:** CSV 생성 시 JSON 탐색 경로 콘솔 출력
+- **v1.83**: Workflow Documentation & Metadata Improvements
+  - 🤖 **워크플로우 강화:** 에이전트가 `view_file`로 이미지를 직접 분석 후 JSON 생성 (필수)
+  - ⛔ **체크포인트 추가:** 이미지 분석 단계에 필수 체크리스트 표 추가 (건너뛰기 방지)
+  - 📊 **키워드 확장:** 권장 키워드 개수 25-35개로 상향 조정
+  - 🔧 **자동화 코드 제거:** Python 기반 AI 자동 재생성 로직 제거 (에이전트 직접 수행으로 전환)
+  - 📚 **키워드 사전 확장:** Subject, Style, Lighting, Color 사전 각 30개 이상으로 확장 (폴백 품질 개선)
+  - ⚠️ **누락 경고 강화:** JSON 누락 시 콘솔 경고 + CSV 생성 결과에 개수 표시
 
 ---
 
@@ -293,3 +300,127 @@ When asking Antigravity to generate images, check `config/prompt_config.md` or `
 - Saves JSON sidecars: `image_01.json` (metadata)
 
 Once images are in the folder, simply **refresh the Dashboard** to see them in "Drafts" and start the upscale process.
+
+---
+
+## 🔄 Complete Workflow: Image → JSON → CSV
+
+이 프로젝트의 핵심 워크플로우입니다. 에이전트(Antigravity)가 이미지 생성부터 메타데이터 생성까지 모든 과정을 수행합니다.
+
+### 프로세스 플로우차트
+
+```mermaid
+flowchart TD
+    subgraph "1️⃣ 이미지 생성 (에이전트)"
+        A[사용자 요청] --> B[prompt_config.md 읽기]
+        B --> C[프롬프트 구성]
+        C --> D[generate_image 호출]
+        D --> E[이미지 생성됨]
+    end
+
+    subgraph "2️⃣ 이미지 분석 (에이전트) - 필수!"
+        E --> F[view_file로 이미지 분석]
+        F --> G{체크포인트 표 작성}
+        G -->|오브젝트| H[분석 결과]
+        G -->|배경/장소| H
+        G -->|분위기| H
+        G -->|색상| H
+        G -->|조명| H
+        G -->|구도| H
+    end
+
+    subgraph "3️⃣ JSON 메타데이터 생성 (에이전트)"
+        H --> I[adobe_stock_guidelines.md 참조]
+        I --> J[Title 작성: 70자 이내]
+        I --> K[Keywords 작성: 25-35개]
+        I --> L[Category 선택: 1-21]
+        J & K & L --> M[write_to_file로 JSON 저장]
+    end
+
+    subgraph "4️⃣ 파일 저장"
+        M --> N[generations/timestamp/image.png]
+        M --> O[generations/timestamp/image.json]
+    end
+
+    subgraph "5️⃣ 대시보드 (Python)"
+        N & O --> P[Dashboard 새로고침]
+        P --> Q[Upscale Selected]
+        Q --> R[upscaled/ 폴더 생성]
+        R --> S[CSV 생성 버튼]
+        S --> T{JSON 있음?}
+        T -->|Yes| U[JSON에서 메타데이터 읽기]
+        T -->|No| V[⚠️ 경고 + 파일명 추론]
+        U & V --> W[submission.csv 생성]
+    end
+
+    W --> X[Adobe Stock 업로드]
+
+    style F fill:#FFD700,stroke:#333,stroke-width:2px
+    style G fill:#FF6B6B,stroke:#333,stroke-width:2px
+    style M fill:#90EE90,stroke:#333,stroke-width:2px
+    style T fill:#87CEEB,stroke:#333,stroke-width:2px
+```
+
+### 에이전트 수행 단계 상세
+
+| 단계 | 도구 | 설명 |
+|------|------|------|
+| 1. 프롬프트 구성 | `view_file` | `config/prompt_config.md`에서 스타일, 품질 부스터 확인 |
+| 2. 이미지 생성 | `generate_image` | AI 이미지 생성기 호출 |
+| 3. 이미지 분석 | `view_file` | **생성된 이미지를 직접 보고 시각적 요소 추출** |
+| 4. JSON 생성 | `write_to_file` | 분석 결과 기반 메타데이터 파일 생성 |
+| 5. 파일 이동 | `run_command` | `generations/{timestamp}/` 폴더로 정리 |
+
+### 체크포인트 표 (4단계 필수)
+
+에이전트는 이미지 분석 시 반드시 아래 표를 채워야 합니다:
+
+| 항목 | 분석 결과 |
+|------|----------|
+| 오브젝트 | 이미지에 보이는 주요 물체/인물 |
+| 배경/장소 | 실내/실외, 구체적 장소 |
+| 분위기 | 감정, 느낌, 톤 |
+| 색상 | 지배적 색상, 색상 조화 |
+| 조명 | 자연광/인공광, 방향, 강도 |
+| 구도 | 앵글, 프레이밍, 구성 |
+
+### JSON 메타데이터 형식
+
+```json
+{
+  "filename": "cozy_christmas_living_room.png",
+  "title": "Cozy living room with Christmas tree and glowing fireplace",
+  "keywords": [
+    "christmas", "living room", "fireplace", "tree", "cozy",
+    "holiday", "decoration", "warm", "winter", "home",
+    "interior", "festive", "celebration", "light", "ornament",
+    "family", "tradition", "december", "gift", "present",
+    "comfort", "evening", "indoor", "domestic", "seasonal"
+  ],
+  "category": "15",
+  "category_name": "Culture and Religion",
+  "asset_type": "photo",
+  "prompt": "Professional stock photo, cozy Christmas living room...",
+  "is_ai_generated": true,
+  "is_fictional": true
+}
+```
+
+### CSV 생성 로직 (Python)
+
+`dashboard/app.py`의 `get_metadata_for_file()` 함수:
+
+1. **JSON 우선:** `{image_name}.json` 파일 존재 확인 → 있으면 읽어서 사용
+2. **폴백:** JSON 없으면 경고 로그 출력 + `metadata_generator.py`로 파일명 기반 추론
+3. **결과 표시:** CSV 생성 시 JSON 누락 개수 집계 후 사용자에게 ⚠️ 메시지 표시
+
+---
+
+## 📋 워크플로우 파일 위치
+
+| 파일 | 용도 |
+|------|------|
+| `.agent/workflows/generate-stock-image.md` | 에이전트 실행 워크플로우 (7단계) |
+| `config/prompt_config.md` | 프롬프트 구성 요소 |
+| `config/adobe_stock_guidelines.md` | Adobe Stock 메타데이터 규칙 |
+
