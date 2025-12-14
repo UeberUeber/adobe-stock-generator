@@ -152,5 +152,6 @@ Copy-Item "{원본 이미지}" -Destination "$destDir/{filename}.png"
 
 | 파일 | 용도 |
 |------|------|
-| `config/prompt_config.md` | 프롬프트 구성 요소 |
+| `config/strategy_guide.md` | 📊 **멱법칙 기반 전략 (바벨 전략, 변주 생산, 승자 투자)** |
+| `config/prompt_config.md` | 프롬프트 구성 요소 (스타일, 트렌드, 네거티브) |
 | `config/adobe_stock_guidelines.md` | 메타데이터 작성 가이드라인 |

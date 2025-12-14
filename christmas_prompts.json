@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "specific_subject": "Family celebrating Christmas by the fireplace, drinking hot cocoa, cozy sweaters, happiness, authentic interaction",
+    "prompt": "Professional stock photo, commercial quality, 8k resolution, Cozy Family celebrating Christmas by the fireplace, drinking hot cocoa, cozy sweaters, happiness, authentic interaction, home office, warm interior, generic laptop, plain monitor, Style: Photorealistic, Lighting: Warm Golden Hour, Composition: Centered, Color: Warm Cozy, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
+    "negative_prompt": "no logos, no brand names, no trademarks, no company logos, no text, no letters, no words, no writing, no signage, no watermarks, no stamps, no emblems, no symbols, no apple logo, no macbook, no iphone, no ipad, no microsoft logo, no windows logo, no google logo, no samsung, no dell, no hp logo, no lenovo, no nike swoosh, no adidas, no coca cola, no starbucks, no deformed hands, no extra fingers, no missing fingers, no malformed limbs, no distorted faces, no asymmetric eyes, no blurry, no pixelated, no grainy, no noise, no artifacts, no glitches, no compression artifacts, no celebrities, no famous people, no politicians, no copyrighted characters, no fictional characters, no flags, no currency, no government symbols, no violence, no weapons, no drugs, no alcohol visible, no nudity, no suggestive content",
+    "timestamp": "2025-12-13_18-59-42",
+    "category_id": "14"
+  },
+  {
+    "id": 2,
+    "specific_subject": "Snow covered pine forest in winter, peaceful Christmas atmosphere, majestic scenery, untouched nature",
+    "prompt": "Professional stock photo, commercial quality, 8k resolution, Zen Snow covered pine forest in winter, peaceful Christmas atmosphere, majestic scenery, untouched nature, minimalist, calm, serene, Style: Cinematic, Lighting: Natural Soft, Composition: Negative Space, Color: Pastel & Soft, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
+    "negative_prompt": "no logos, no brand names, no trademarks, no company logos, no text, no letters, no words, no writing, no signage, no watermarks, no stamps, no emblems, no symbols, no apple logo, no macbook, no iphone, no ipad, no microsoft logo, no windows logo, no google logo, no samsung, no dell, no hp logo, no lenovo, no nike swoosh, no adidas, no coca cola, no starbucks, no deformed hands, no extra fingers, no missing fingers, no malformed limbs, no distorted faces, no asymmetric eyes, no blurry, no pixelated, no grainy, no noise, no artifacts, no glitches, no compression artifacts, no celebrities, no famous people, no politicians, no copyrighted characters, no fictional characters, no flags, no currency, no government symbols, no violence, no weapons, no drugs, no alcohol visible, no nudity, no suggestive content",
+    "timestamp": "2025-12-13_18-59-42",
+    "category_id": "15"
+  },
+  {
+    "id": 3,
+    "specific_subject": "Close-up of modern Christmas ornaments, glitter textures, glass reflections, luxury holiday decoration, gold and red",
+    "prompt": "Professional stock photo, commercial quality, 8k resolution, Immersive Close-up of modern Christmas ornaments, glitter textures, glass reflections, luxury holiday decoration, gold and red, rich textures, tactile feel, Style: 3D Digital Art, Lighting: Studio Lighting, Composition: Macro/Close-up, Color: Vibrant Neon, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
+    "negative_prompt": "no logos, no brand names, no trademarks, no company logos, no text, no letters, no words, no writing, no signage, no watermarks, no stamps, no emblems, no symbols, no apple logo, no macbook, no iphone, no ipad, no microsoft logo, no windows logo, no google logo, no samsung, no dell, no hp logo, no lenovo, no nike swoosh, no adidas, no coca cola, no starbucks, no deformed hands, no extra fingers, no missing fingers, no malformed limbs, no distorted faces, no asymmetric eyes, no blurry, no pixelated, no grainy, no noise, no artifacts, no glitches, no compression artifacts, no celebrities, no famous people, no politicians, no copyrighted characters, no fictional characters, no flags, no currency, no government symbols, no violence, no weapons, no drugs, no alcohol visible, no nudity, no suggestive content",
+    "timestamp": "2025-12-13_18-59-42",
+    "category_id": "14"
+  }
+]

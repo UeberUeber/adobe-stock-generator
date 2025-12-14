@@ -421,6 +421,7 @@ flowchart TD
 | 파일 | 용도 |
 |------|------|
 | `.agent/workflows/generate-stock-image.md` | 에이전트 실행 워크플로우 (7단계) |
+| `config/strategy_guide.md` | 📊 **멱법칙 기반 전략 가이드** |
 | `config/prompt_config.md` | 프롬프트 구성 요소 |
 | `config/adobe_stock_guidelines.md` | Adobe Stock 메타데이터 규칙 |
 

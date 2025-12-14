@@ -117,19 +117,51 @@ fairy light, tradition, seasonal, december
 
 ---
 
-## 📂 카테고리 맵핑
+## 📂 카테고리 맵핑 (Adobe Stock 공식)
 
-| 카테고리 ID | 이름 | 대표 키워드 |
-|-------------|------|-------------|
-| 1 | Animals | pet, wildlife, dog, cat |
-| 3 | Backgrounds/Textures | pattern, abstract, surface |
-| 4 | Business | office, corporate, professional |
-| 8 | Food | meal, dish, cuisine, delicious |
-| 12 | Landscapes | nature, scenery, mountain |
-| 13 | Lifestyle | people, living, everyday |
-| 14 | People | portrait, person, human |
-| 20 | Technology | digital, tech, innovation |
-| 22 | Travel | vacation, tourist, landmark |
+| ID | 카테고리 | 대표 키워드 | 설명 |
+|----|---------|-------------|------|
+| 1 | Animals | pet, wildlife, dog, cat, bird | 동물, 애완동물, 야생동물 |
+| 2 | Buildings and Architecture | building, house, interior, landmark | 건물, 건축, 인테리어, 랜드마크 |
+| 3 | Business | office, corporate, professional, finance | 비즈니스, 사무실, 기업, 금융 |
+| 4 | Drinks | coffee, wine, cocktail, beverage | 음료, 커피, 와인, 칵테일 |
+| 5 | The Environment | eco, sustainable, pollution, climate | 환경, 생태, 지속가능성 |
+| 6 | States of Mind | emotion, feeling, mood, psychology | 감정, 기분, 심리 |
+| 7 | Food | meal, dish, cuisine, ingredient | 음식, 요리, 식재료 |
+| 8 | Graphic Resources | pattern, texture, background, abstract | 패턴, 텍스처, 배경, 추상 |
+| 9 | Hobbies and Leisure | hobby, game, craft, recreation | 취미, 여가, 오락 |
+| 10 | Industry | factory, manufacturing, industrial | 산업, 공장, 제조 |
+| 11 | Landscapes | nature, scenery, mountain, beach | 풍경, 자연, 산, 해변 |
+| 12 | Lifestyle | wellness, living, everyday, health | 라이프스타일, 일상, 웰빙 |
+| 13 | People | portrait, person, group, human | 사람, 초상화, 그룹 |
+| 14 | Plants and Flowers | flower, plant, garden, tree, leaf | 식물, 꽃, 정원, 나무, 잎 |
+| 15 | Culture and Religion | festival, holiday, christmas, tradition | 문화, 종교, 축제, 명절 |
+| 16 | Science | research, experiment, laboratory | 과학, 연구, 실험 |
+| 17 | Social Issues | community, diversity, social | 사회문제, 커뮤니티 |
+| 18 | Sports | fitness, exercise, athlete, game | 스포츠, 피트니스, 운동 |
+| 19 | Technology | digital, tech, computer, innovation | 기술, 컴퓨터, 디지털 |
+| 20 | Transport | car, vehicle, airplane, train | 교통, 차량, 비행기 |
+| 21 | Travel | vacation, tourist, landmark, trip | 여행, 관광, 휴가 |
+
+### 🎯 카테고리 선택 가이드
+
+> **핵심 원칙**: 이미지의 **주요 피사체**가 무엇인지가 카테고리를 결정한다.
+
+| 이미지 유형 | 올바른 카테고리 | 잘못된 카테고리 |
+|------------|----------------|----------------|
+| 장미 꽃다발 (발렌타인용) | **14 (Plants and Flowers)** | ~~15 (Culture)~~ |
+| 하트 패턴/배경 | **8 (Graphic Resources)** | ~~15 (Culture)~~ |
+| 크리스마스 트리+거실 장면 | **15 (Culture and Religion)** | ~~2 (Architecture)~~ |
+| 잎사귀 매크로 사진 | **14 (Plants and Flowers)** | ~~5 (Environment)~~ |
+| 친환경 컨셉 (지구+손) | **5 (The Environment)** | ~~14 (Plants)~~ |
+| 요가/명상 장면 | **12 (Lifestyle)** | ~~18 (Sports)~~ |
+| 대리석/우드 텍스처 | **8 (Graphic Resources)** | ~~2 (Architecture)~~ |
+| 설날 등롱 장식 | **15 (Culture and Religion)** | ~~8 (Graphic)~~ |
+
+### ⚠️ 주의사항
+- **축제/명절 "장면"** → Category 15 (Culture)
+- **축제용 "패턴/배경"** → Category 8 (Graphic Resources)
+- **꽃이 주제인 이미지** → Category 14 (Plants and Flowers) (시즌 상관없이)
 
 ---
 
