@@ -624,12 +624,21 @@
         }
 
         function toggleCheckAll() {
-            const drafts = allImages.filter(i => !selectedImages.has(i.id));
+            // Get drafts that are not in selection
+            let drafts = allImages.filter(i => !selectedImages.has(i.id));
+
+            // Apply the same filter as the display
+            const filterVal = document.getElementById('filter-select')?.value || 'all';
+            drafts = filterImageList(drafts, filterVal);
+
+            // Check if all VISIBLE drafts are already checked
             const allChecked = drafts.every(i => checkedDrafts.has(i.id));
 
             if (allChecked) {
+                // Uncheck only visible drafts
                 drafts.forEach(i => checkedDrafts.delete(i.id));
             } else {
+                // Check only visible drafts
                 drafts.forEach(i => checkedDrafts.add(i.id));
             }
             renderDrafts();
