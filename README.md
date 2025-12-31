@@ -183,9 +183,9 @@ Log files are stored in the `logs/` folder for troubleshooting and performance a
 Adjust `TILE_SIZE` constant in `generation_pipeline.py`:
 ```python
 # 512: Fast, high VRAM usage (8GB+ required)
-# 384: Balanced, medium VRAM (~6GB) - Recommended
-# 256: Slow (~50% increase), low VRAM (~4GB)
-TILE_SIZE = 384
+# 384: Balanced, medium VRAM (~6GB)
+# 256: Slow (~50% increase), low VRAM (~4GB) - Safe Mode (Default)
+TILE_SIZE = 256
 ```
 
 ### Clearing Logs:
@@ -214,10 +214,57 @@ pip install flask pillow opencv-python torch realesrgan
 
 ## 📝 Changelog
 
-- **v1.0**: Initial release with prompt generation
-- **v1.1**: Added Real-ESRGAN upscaling pipeline
-- **v1.2**: Dashboard with drag-and-drop image management
-- **v1.3**: Configurable prompts via MD file
+- **v1.9**: Critical Memory Optimization
+  - 🚀 **FP16 Enabled**: Reduced VRAM usage by ~50% by enabling half-precision in Real-ESRGAN
+  - ⚙️ **Tile Size 256**: Reduced default tile size for maximum stability on 6GB VRAM GPUs
+  - ✅ **OOM Fix**: Fixed `ArrayMemoryError` during 4K upscaling
+- **v1.85**: Category Mapping & UI Fix
+  - 🔧 Category mapping fix: Fix category ID errors in `adobe_stock_guidelines.md` (21 full categories)
+  - 🎯 Category selection guide: Add correct category mapping guidelines by image type
+  - 🐛 Select All bug fix: Only select visible filtered images
+- **v1.84**: Power Law Strategy Integration
+  - 📊 Strategy guide: Add `config/strategy_guide.md` (power law based Adobe Stock strategy)
+  - 🎯 Barbell strategy: Evergreen 60% / Seasonal 30% / Trending 10% portfolio allocation
+  - 📅 Season calendar: Upload timing guide (2-3 months ahead)
+  - 🔗 Workflow integration: Add strategy guide reference
+- **v1.83**: Workflow Documentation & Metadata Improvements
+  - 🤖 Workflow enhancement: Agent must analyze images with `view_file` before JSON creation
+  - ⛔ Checkpoint added: Mandatory checklist table in image analysis step
+  - 📊 Keyword expansion: Recommended keyword count increased to 25-35
+  - 🔧 Automation removal: Remove Python-based AI auto-regeneration (agent performs directly)
+  - 📚 Dictionary expansion: Subject, Style, Lighting, Color dictionaries expanded to 30+ items
+  - ⚠️ Warning enhancement: Console warning + count display for missing JSONs
+- **v1.82**: CSV Generation Improvements
+  - 🔧 Remove auto CSV: Remove auto CSV generation on upscale completion (manual button control)
+  - 📁 JSON path improvement: Search JSON from parent folder (generation root) during CSV generation
+  - 🔧 UTF-8 BOM support: Handle JSON files with BOM (created by PowerShell)
+  - 📊 Debug logs: Console output of JSON search paths during CSV generation
+- **v1.81**: UI Filter Dropdown
+  - 🎨 Filter dropdown: Add filter to Drafts area (All / Raw Only / Processed / Upscaled)
+  - 🚀 Upscaled filter: Quick selection of upscaled images only
+- **v1.8**: CSV Simplification & Metadata Flow Fix
+  - 🔧 Direct CSV: Generate `submission.csv` directly in `upscaled/` folder
+  - 🔧 JSON copy fix: Auto-copy JSON metadata to `upscaled/` folder during upscale
+  - 🔧 JSON read fix: Resolve `image_dir` parameter missing in `list_images()` API
+  - ⚠️ JSON warning: Console warning for images missing JSON during CSV generation
+  - 📊 has_json flag: Show JSON metadata existence in image list API
+- **v1.7**: UI/UX & Monitoring Improvements
+  - 🎨 UI Cleanup: Selection panel action buttons moved to header (consistent layout)
+  - ⏱️ Real-time Monitoring: Upscale progress and errors shown in dashboard logs instantly
+  - 🔧 Pipe Fix: Resolved partial logs by flushing stdout and draining pipes
+  - 🔧 Compatibility: Fixed `torchvision` import error in isolated subprocess
+- **v1.6**: Stability & Memory Optimization
+  - 🚀 Subprocess Isolation: Upscaling runs in separate process, preventing dashboard crashes
+  - 🔧 Memory Optimization: Model load/unload per image, aggressive `gc.collect()`
+  - ⚙️ Tile Size: Reduced to 384 (Lower VRAM usage)
+  - 📊 Error Logging: Separate `logs/error.log` with stack traces
+- **v1.5**: JSON Sidecar Metadata System
+  - ✨ New module: `prompt_metadata.py` - auto-extract metadata from prompts
+  - ✨ JSON sidecar: Generate `.json` metadata file per image
+  - 🔧 CSV improvement: Load JSON first, fallback to filename inference
+  - 📚 Knowledge base: `config/adobe_stock_guidelines.md` documentation
+  - 🔧 Metadata quality: Remove generic templates, filename-based titles
+  - ✅ 22 categories: Full Adobe Stock category support
 - **v1.4**: 
   - 🔧 Fixed torchvision 0.16+ compatibility (monkey patch)
   - 🔧 Fixed memory leak during upscaling (`del` + `torch.cuda.empty_cache()`)

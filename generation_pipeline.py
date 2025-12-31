@@ -41,7 +41,7 @@ TARGET_MIN_MP = 4
 # 512: 빠름, VRAM 많이 사용 (8GB+ 필요)
 # 384: 균형, VRAM 중간 (~6GB) - 권장
 # 256: 느림 (~50% 증가), VRAM 적게 사용 (~4GB)
-TILE_SIZE = 384
+TILE_SIZE = 256
 
 class ImagePipeline:
     def __init__(self, run_timestamp):
@@ -93,7 +93,7 @@ class ImagePipeline:
             tile=TILE_SIZE,  # Configurable tile size for VRAM management
             tile_pad=10,
             pre_pad=0,
-            half=False,    # FP32 for better quality (slower but reduces artifacts)
+            half=True,    # FP16 enabled for memory cleanup
             gpu_id=0 if torch.cuda.is_available() else None
         )
         return upsampler
