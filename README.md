@@ -8,9 +8,30 @@ AI-powered image generation pipeline for Adobe Stock submissions with drag-and-d
 
 This project automates the Adobe Stock image submission workflow:
 1. **Generate Prompts** → Create optimized prompts for AI image generation
-2. **Process Images** → Crop to 16:9 and upscale to 4K with Real-ESRGAN
-3. **Review & Select** → Drag-and-drop dashboard for image curation
-4. **Submit** → Generate Adobe Stock compliant CSV metadata
+2.  **Process Images** → Crop to 16:9 and upscale to 4K with Real-ESRGAN
+3.  **Review & Select** → Drag-and-drop dashboard for image curation
+4.  **Submit** → Generate Adobe Stock compliant CSV metadata
+
+## 🔥 New Features: Batch Automation (2026.01)
+
+### 1. `/원큐` Batch Workflow (`.agent/workflows/원큐.md`)
+A fully automated, headless batch processing workflow that replaces manual 1-by-1 analysis.
+-   **Source of Truth:** Uses `seasonal_prompts.json` for both image generation and metadata creation.
+-   **Automated Pipeline:**
+    1.  **Metadata Prep:** `process_seasonal_metadata.py` creates session & JSONs.
+    2.  **Generation:** Agent generates images based on preset prompts.
+    3.  **Organization:** `move_generated_images.py` moves files to project folders.
+    4.  **Processing:** `generation_pipeline.py` crops (16:9) and upscales (8K).
+    5.  **Packaging:** `generate_submission_csv.py` creates final CSV.
+
+### 2. MECE Prompt Design Strategy
+-   **Mutually Exclusive, Collectively Exhaustive:** Prompts are designed to cover distinct logical categories (e.g., Typography, Planning, Lifestyle, Abstract) without overlap.
+-   Ensures diverse portfolio coverage for seasonal themes.
+
+### 3. Headless Script Automation
+Refactored core scripts to support command-line arguments for agent orchestration:
+-   `move_generated_images.py <TIMESTAMP>`: Auto-matches filenames using JSON metadata.
+-   `generate_submission_csv.py <TIMESTAMP>`: Dynamic folder traversal for JSON lookup.
 
 ---
 
@@ -454,7 +475,8 @@ Agent must fill this table during image analysis:
 
 | File | Purpose |
 |------|---------|
-| `.agent/workflows/generate-stock-image.md` | Agent execution workflow (7 steps) |
+| `.agent/workflows/원큐.md` | **`/원큐`** : Integrated batch workflow for full automation (Generation → Upscale → CSV) |
+| `.agent/workflows/generate-stock-image.md` | `generate-stock-image` : Manual/Single Agent execution workflow (7 steps) |
 | `config/strategy_guide.md` | 📊 **Power law based strategy guide** |
 | `config/prompt_config.md` | Prompt configuration elements |
 | `config/adobe_stock_guidelines.md` | Adobe Stock metadata rules |

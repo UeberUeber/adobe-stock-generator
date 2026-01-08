@@ -1,5 +1,5 @@
 ---
-description: Adobe Stock 이미지 생성 및 메타데이터 자동 생성 워크플로우
+description: Adobe Stock 관련 모든 요청 - 이미지 아이디어/테마 추천/프롬프트 생성/이미지 생성/메타데이터 작성 시 필수. 반드시 config/strategy_guide.md(전략)와 config/prompt_config.md(프롬프트), seasonal_prompts.json(기존 프롬프트) 먼저 확인할 것
 ---
 
 # Adobe Stock 이미지 생성 워크플로우
