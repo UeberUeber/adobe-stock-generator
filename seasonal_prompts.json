@@ -1,100 +1,30 @@
 [
   {
-    "id": 1,
-    "theme": "2026 Typography",
-    "subject": "3D Golden 2026",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Large 3D golden numbers '2026' standing on a dark glossy luxury stage, dramatic lighting, premium new year concept, wealth and success, Style: 3D Render, Lighting: Studio, Composition: Center, Color: Gold and Black, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "blurry, low quality, distorted text, watermark, logo"
+    "id": 27,
+    "theme": "Spring New Semester",
+    "subject": "Colorful School Supplies Flatlay",
+    "prompt": "Professional stock photo, commercial quality, 8k resolution, Colorful new school supplies arranged on clean white desk including notebooks pencils highlighters and fresh flowers, back to school concept, new semester preparation, Style: Flatlay, Lighting: Bright Natural, Composition: Top Down, Color: Pastel Rainbow, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
+    "negative_prompt": "brand logos, messy, dark, cluttered"
   },
   {
-    "id": 2,
-    "theme": "2026 Typography",
-    "subject": "Minimalist Wooden Blocks",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Wooden blocks forming the number '2026' on a pristine white desk, small succulent plant nearby, eco-friendly planning, clean start, Style: Minimalist, Lighting: Soft Daylight, Composition: High Angle, Color: White and Wood, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "blurry, dark, cluttered"
+    "id": 28,
+    "theme": "Spring New Semester",
+    "subject": "Students Walking Campus Cherry Blossoms",
+    "prompt": "Professional stock photo, commercial quality, 8k resolution, University students walking on campus pathway lined with blooming cherry blossom trees, spring semester atmosphere, hopeful new beginning, Style: Lifestyle, Lighting: Soft Morning, Composition: Wide Shot, Color: Pastel Pink and Green, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
+    "negative_prompt": "winter, bare trees, dark, crowded"
   },
   {
-    "id": 3,
-    "theme": "2026 Typography",
-    "subject": "Neon 2026 Sign",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Glowing neon sign saying '2026' on a brick wall, cyberpunk aesthetic, future vibes, night life, Style: Cyberpunk, Lighting: Neon, Composition: Front on, Color: Purple and Blue, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "broken glass, dark, grainy"
+    "id": 29,
+    "theme": "Spring New Semester",
+    "subject": "Empty Classroom Morning Light",
+    "prompt": "Professional stock photo, commercial quality, 8k resolution, Bright empty classroom with rows of desks bathed in warm morning sunlight through windows, fresh start education concept, clean learning environment, Style: Interior, Lighting: Golden Morning Sun, Composition: Wide Angle, Color: Warm Wood and White, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
+    "negative_prompt": "messy, dark, cluttered, graffiti"
   },
   {
-    "id": 4,
-    "theme": "Planning",
-    "subject": "Handwriting Goals",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Close up of hand writing '2026 Goals' in a premium leather notebook with a fountain pen, focus on determination, personal growth, Style: Lifestyle Close-up, Lighting: Warm Reading Light, Composition: Over the shoulder, Color: Warm tones, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "messy handwriting, ugly hand, blurry text"
-  },
-  {
-    "id": 5,
-    "theme": "Business",
-    "subject": "2026 Business Projection",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Diverse business team looking at a glass wall with a rising graph labeled '2026', focus on teamwork and success, corporate strategy, Style: Corporate, Lighting: Bright Office, Composition: Wide Shot, Color: Blue and Grey, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "frowning faces, chaotic environment, specific logos"
-  },
-  {
-    "id": 6,
-    "theme": "Calendar Object",
-    "subject": "Flipping Calendar to Jan 2026",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Hand flipping a desk calendar page to reveal 'January 2026', anticipation, new year preparation, time management, Style: Studio Product, Lighting: Clean White, Composition: Macro, Color: Red and White, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "torn paper, blurry dates"
-  },
-  {
-    "id": 7,
-    "theme": "Time",
-    "subject": "Hourglass 2026",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Glass hourglass with golden sand flowing, '2026' softly etched on the glass, passing of time, urgency, precision, Style: Cinematic Still Life, Lighting: Rim Lighting, Composition: Center, Color: Amber and Black, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "broken glass, messy sand"
-  },
-  {
-    "id": 8,
-    "theme": "Seasons",
-    "subject": "Four Seasons 2026 Collage",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Artistic composition representing the four seasons of 2026, transitioning from snow to flowers to sun to leaves, cycle of the year, diversity of time, Style: Artistic Composite, Lighting: Varied, Composition: Split layout, Color: Multi-color, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "jarring transitions, low resolution"
-  },
-  {
-    "id": 9,
-    "theme": "Lifestyle",
-    "subject": "Cozy Home Office Planner",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Cozy home office desk with a laptop, steaming coffee, and an open planner marked '2026', remote work lifestyle, comfort, organization, Style: Hygge, Lighting: Soft Window Light, Composition: Eye Level, Color: Beige and Soft Brown, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "clutter, messy cables, brand logos"
-  },
-  {
-    "id": 10,
-    "theme": "New Beginning",
-    "subject": "Sunrise 2026 Silhouette",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Silhouette of numbers '2026' against a brilliant sunrise over a city skyline, hope, new era, dawn of a new year, Style: Landscape, Lighting: Golden Hour, Composition: Panoramic, Color: Orange and Silhouette Black, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "cloudy, dreary, dark"
-  },
-  {
-    "id": 11,
-    "theme": "Celebration",
-    "subject": "Sparkler Writing 2026",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Long exposure photography of a sparkler writing '2026' in the air at night, bokeh lights in background, celebration, party, excitement, Style: Long Exposure, Lighting: Night/Sparkler, Composition: Center, Color: Gold and Black, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "shaky hand, blurry lines"
-  },
-  {
-    "id": 12,
-    "theme": "Tech",
-    "subject": "Holographic 2026 Interface",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Futuristic transparent digital tablet displaying a 2026 calendar interface, floating data elements, smart technology, innovation, Style: Sci-Fi, Lighting: Blue Glow, Composition: Close up on screen, Color: Cyber Blue, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "screen glare, fingerprints"
-  },
-  {
-    "id": 13,
-    "theme": "Tech Wearable",
-    "subject": "Smartwatch Jan 1 2026",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Close up of a modern smartwatch on a wrist displaying 'Wednesday, Jan 1, 2026', fitness goals, digital life, punctuality, Style: Tech Lifestyle, Lighting: Studio, Composition: Macro watch face, Color: Black and OLED colors, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "scratched screen, hairy arm visible distraction"
-  },
-  {
-    "id": 14,
-    "theme": "Nature Texture",
-    "subject": "Sand Writing 2026",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, The year '2026' written in smooth sand on a tropical beach, wave gently approaching, vacation planning, relaxation, nature, Style: Nature Travel, Lighting: High Noon, Composition: Top Down, Color: Sand and Aqua, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "footprints, trash, seaweed"
+    "id": 30,
+    "theme": "Spring New Semester",
+    "subject": "Open Notebook Fresh Start",
+    "prompt": "Professional stock photo, commercial quality, 8k resolution, Open blank notebook with pen on wooden desk next to coffee cup and spring flowers, new goals planning concept, fresh start inspiration, Style: Lifestyle Close-up, Lighting: Soft Diffused, Composition: 45 Degree Angle, Color: White and Soft Green, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
+    "negative_prompt": "messy handwriting, brand logos, dark"
   }
 ]

@@ -33,12 +33,28 @@ def generate_csv(target_arg):
         writer.writeheader()
         
         success_count = 0
+        parent_dir = os.path.dirname(target_dir)
+        
         for img_file in images:
             base_name = os.path.splitext(img_file)[0]
             # JSON might be in upscaled folder OR parent folder
             # Strategy: Look in upscaled first, then parent
             json_file = os.path.join(target_dir, f"{base_name}.json")
-            parent_json = os.path.join(os.path.dirname(target_dir), f"{base_name}.json")
+            parent_json = os.path.join(parent_dir, f"{base_name}.json")
+            
+            # NEW: Handle filename format mismatch
+            # Image: "heart_shadow_hands_2026_01_15_23_31_34_1768487536243.png"
+            # JSON:  "heart_shadow_hands_2026-01-15_23-31-34.json"
+            # Extract prefix before timestamp pattern and search for matching JSON
+            import re
+            prefix_match = re.match(r'^(.+?)_\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_\d{2}_\d+$', base_name)
+            if prefix_match:
+                prefix = prefix_match.group(1)
+                # Search for JSON files in parent that start with this prefix
+                for f in os.listdir(parent_dir):
+                    if f.startswith(prefix) and f.endswith('.json'):
+                        parent_json = os.path.join(parent_dir, f)
+                        break
             
             meta = {}
             if os.path.exists(json_file):
