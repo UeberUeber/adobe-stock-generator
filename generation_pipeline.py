@@ -19,6 +19,7 @@ except ImportError:
 import cv2
 import time
 import gc
+import math
 import torch
 from PIL import Image
 from realesrgan import RealESRGANer
@@ -169,7 +170,12 @@ class ImagePipeline:
                     if img is None:
                         raise ValueError(f"Failed to read image: {processed_path}")
                     
-                    output, _ = upsampler.enhance(img, outscale=4)
+                    # Calculate required scale to hit TARGET_MIN_MP
+                    current_pixels = img.shape[0] * img.shape[1]
+                    required_scale = math.ceil((TARGET_MIN_MP * 1000000 / current_pixels) ** 0.5)
+                    final_outscale = max(4, required_scale)
+                    
+                    output, _ = upsampler.enhance(img, outscale=final_outscale)
                     cv2.imwrite(upscaled_path, output)
                     
                     # === AGGRESSIVE MEMORY CLEANUP ===

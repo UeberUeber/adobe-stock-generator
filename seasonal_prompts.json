@@ -1,30 +1,37 @@
 [
   {
-    "id": 27,
-    "theme": "Spring New Semester",
-    "subject": "Colorful School Supplies Flatlay",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Colorful new school supplies arranged on clean white desk including notebooks pencils highlighters and fresh flowers, back to school concept, new semester preparation, Style: Flatlay, Lighting: Bright Natural, Composition: Top Down, Color: Pastel Rainbow, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "brand logos, messy, dark, cluttered"
+    "id": 1,
+    "theme": "Technology Cybersecurity",
+    "subject": "Anonymous Hacker Dark Room Multiple Monitors",
+    "prompt": "Professional stock photo, commercial quality, 8k resolution, Anonymous hacker typing on a keyboard in a dark room illuminated by multiple glowing computer monitors displaying complex green code and data streams, cybersecurity and network protection concept, modern tech workspace, Silhouette from behind, Style: Cinematic Cyberpunk Photography, Lighting: Dramatic High Contrast Neon Green and Blue, Composition: Over the Shoulder Depth of Field, Color: Dark Shadows with Vibrant Neon Green and Cyan, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
+    "negative_prompt": "brand logos, text, bright room, old computers, messy cables, daylight, recognizable face, low quality"
   },
   {
-    "id": 28,
-    "theme": "Spring New Semester",
-    "subject": "Students Walking Campus Cherry Blossoms",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, University students walking on campus pathway lined with blooming cherry blossom trees, spring semester atmosphere, hopeful new beginning, Style: Lifestyle, Lighting: Soft Morning, Composition: Wide Shot, Color: Pastel Pink and Green, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "winter, bare trees, dark, crowded"
+    "id": 2,
+    "theme": "People Lifestyle",
+    "subject": "Woman Yoga Mountain Peak Sunrise",
+    "prompt": "Professional stock photo, commercial quality, 8k resolution, Young healthy woman practicing yoga meditation in a peaceful lotus pose on a breathtaking high mountain peak at a glowing golden sunrise, breathtaking dramatic landscape, wellness and mental harmony concept, silhouette with soft sun flare, Style: Lifestyle Nature Photography, Lighting: Warm Golden Hour Sunlight Flare, Composition: Centered Wide Angle Landscape, Color: Warm Orange Gold and Deep Mountain Blue, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
+    "negative_prompt": "brand logos, text, gym, indoors, unnatural lighting, crowded, poor posture, bad anatomy"
   },
   {
-    "id": 29,
-    "theme": "Spring New Semester",
-    "subject": "Empty Classroom Morning Light",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Bright empty classroom with rows of desks bathed in warm morning sunlight through windows, fresh start education concept, clean learning environment, Style: Interior, Lighting: Golden Morning Sun, Composition: Wide Angle, Color: Warm Wood and White, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "messy, dark, cluttered, graffiti"
+    "id": 3,
+    "theme": "Business Finance",
+    "subject": "Financial Charts Tablet Coffee Desk",
+    "prompt": "Professional stock photo, commercial quality, 8k resolution, Close-up of a modern digital tablet displaying luminous financial growth charts and stock market graphs resting on a stylish wooden desk next to a white cup of coffee and a premium pen, corporate investment and economic success concept, Style: Corporate Macro Photography, Lighting: Soft Natural Window Light, Composition: Knolling Flat Lay Angle, Color: Professional Blue Neon Green and Warm Wood, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
+    "negative_prompt": "brand logos, text, messy desk, hands, human face, scattered papers, old technology, dark, blurry"
   },
   {
-    "id": 30,
-    "theme": "Spring New Semester",
-    "subject": "Open Notebook Fresh Start",
-    "prompt": "Professional stock photo, commercial quality, 8k resolution, Open blank notebook with pen on wooden desk next to coffee cup and spring flowers, new goals planning concept, fresh start inspiration, Style: Lifestyle Close-up, Lighting: Soft Diffused, Composition: 45 Degree Angle, Color: White and Soft Green, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
-    "negative_prompt": "messy handwriting, brand logos, dark"
+    "id": 4,
+    "theme": "Autumn Thanksgiving",
+    "subject": "Rustic Autumn Harvest Dinner Table",
+    "prompt": "Professional stock photo, commercial quality, 8k resolution, Beautifully set rustic wooden dining table for an autumn thanksgiving harvest feast, decorated with fresh orange pumpkins, glowing candles, colorful fall leaves, and elegant ceramic plates, cozy and warm holiday celebration concept, inviting atmosphere, Style: Food Lifestyle Photography, Lighting: Warm Candlelight and Soft Ambient, Composition: Low Angle Depth of Field Perspective, Color: Rich Orange Deep Red Warm Gold and Earthy Brown, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
+    "negative_prompt": "brand logos, text, people eating, dirty dishes, cold lighting, artificial plastic pumpkins, messy food"
+  },
+  {
+    "id": 5,
+    "theme": "Sustainable Environment",
+    "subject": "Modern Wind Turbines Green Field Sky",
+    "prompt": "Professional stock photo, commercial quality, 8k resolution, Sleek modern white wind turbines generating clean renewable energy standing tall in a lush vibrant green agricultural field under a clear bright blue sky with soft white clouds, eco-friendly sustainable future concept, bright sunshine, Style: Landscape Clean Energy Photography, Lighting: Bright Midday Natural Sunlight, Composition: Rule of Thirds Expansive View, Color: Vibrant Green Pure White and Crisp Sky Blue, 16:9 aspect ratio, ultra sharp focus, no blur, no noise, no artifacts, professional DSLR quality, crisp details, clean edges, studio lighting, generic unbranded items, no visible logos or text, plain surfaces",
+    "negative_prompt": "brand logos, text, pollution, smog, dead grass, old windmills, dark clouds, industrial waste, birds"
   }
 ]

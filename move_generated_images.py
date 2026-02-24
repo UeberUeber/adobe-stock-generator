@@ -5,7 +5,7 @@ import sys
 import json
 
 # Configuration
-SOURCE_DIR_DEFAULT = r"C:\Users\ueber\.gemini\antigravity\brain\85a822af-ff46-45d8-846a-0e0484ecc941"
+SOURCE_DIR_DEFAULT = r"C:\Users\ueber\.gemini\antigravity\brain\b18b6f25-31f5-4c04-9a23-76d8bb464786"
 # Parent of "generations"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -81,6 +81,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         # First arg is target (timestamp or path)
         target = sys.argv[1]
-        move_files(target_arg=target)
+        source = sys.argv[2] if len(sys.argv) > 2 else None
+        move_files(source_dir=source, target_arg=target)
     else:
-        print("Usage: python move_generated_images.py <TIMESTAMP_OR_PATH>")
+        print("Usage: python move_generated_images.py <TIMESTAMP_OR_PATH> [SOURCE_DIR]")
