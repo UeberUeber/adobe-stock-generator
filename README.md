@@ -124,6 +124,7 @@ Edit `config/prompt_config.md` to customize prompts. Changes are reflected autom
 | `generation_pipeline.py` | Image processing (16:9 crop → 4x upscale) |
 | `metadata_generator.py` | Adobe Stock compliant metadata & CSV |
 | `dashboard/app.py` | Flask API for image management |
+| `config/agent_rules.md` | **Mandatory AI Agent Constraints** (Do not run auto-scripts) |
 
 ---
 
