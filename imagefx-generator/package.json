@@ -1,0 +1,13 @@
+{
+  "name": "imagefx-generator",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "node src/test.js",
+    "generate": "node src/generate.js"
+  },
+  "dependencies": {
+    "@rohitaryal/imagefx-api": "latest",
+    "dotenv": "^16.4.0"
+  }
+}
