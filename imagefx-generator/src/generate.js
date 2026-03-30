@@ -236,9 +236,12 @@ for (let i = 0; i < targetPrompts.length; i++) {
     }
   }
 
-  // 3. Rate limiting
+  // 3. Rate limiting — randomized to avoid bot detection
   if (i < targetPrompts.length - 1) {
-    await new Promise((r) => setTimeout(r, DELAY_MS));
+    const minDelay = Math.max(3000, Math.floor(DELAY_MS * 0.6));
+    const maxDelay = Math.floor(DELAY_MS * 3);
+    const randomDelay = Math.floor(Math.random() * (maxDelay - minDelay)) + minDelay;
+    await new Promise((r) => setTimeout(r, randomDelay));
   }
 }
 
