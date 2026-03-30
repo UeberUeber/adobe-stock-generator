@@ -17,7 +17,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync } from "fs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(__dirname, "..");
-const STOCK_ROOT = resolve(PROJECT_ROOT, "../adobe-stock-generator");
+const STOCK_ROOT = resolve(PROJECT_ROOT, "..");
 
 config({ path: resolve(PROJECT_ROOT, ".env") });
 

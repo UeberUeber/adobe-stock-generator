@@ -10,7 +10,7 @@ import { execSync } from "child_process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(__dirname, "..");
-const STOCK_GENERATOR_ROOT = resolve(PROJECT_ROOT, "../adobe-stock-generator");
+const STOCK_GENERATOR_ROOT = resolve(PROJECT_ROOT, "..");
 const REPORTS_DIR = resolve(PROJECT_ROOT, "reports");
 
 const timestamp = process.argv[2];

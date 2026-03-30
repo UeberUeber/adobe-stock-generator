@@ -17,7 +17,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, appendFileSync } fr
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(__dirname, "..");
-const STOCK_GENERATOR_ROOT = resolve(PROJECT_ROOT, "../adobe-stock-generator");
+const STOCK_GENERATOR_ROOT = resolve(PROJECT_ROOT, "..");
 
 // ─── Args ───
 const args = process.argv.slice(2);
