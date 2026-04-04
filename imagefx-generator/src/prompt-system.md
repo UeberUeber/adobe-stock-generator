@@ -111,15 +111,36 @@ Append to every prompt:
 - "no logos, no brand names, no trademarks, no text, no letters, no words, no numbers, no signage, no banners, no watermarks"
 - "no sunburst rays, no radial ray patterns, no rising sun motifs"
 - "no deformed hands, no extra fingers, no missing fingers, no distorted faces"
+- "no apple logo, no nike, no adidas, no starbucks, no coca cola, no samsung, no google logo, no microsoft logo"
+- "no alcohol, no weapons, no drugs, no nudity, no violence"
 
 ## ANTI-REPETITION — CRITICAL
 {{HISTORY_SECTION}}
 
-## SIMILITUDE WARNING
-Do NOT generate multiple images with similar tone/composition. Especially:
-- Multiple illustrations in the same color palette → vary WILDLY
-- Interior/living room images with similar warm tones → bulk-rejected as "Similitude"
-- Spread across different categories, styles, and color families
+## SIMILITUDE WARNING (from real rejection experience)
+Adobe Stock bulk-rejects images that look too similar. To avoid "Similitude" rejections:
+- **Color palette**: Every image in the batch must use a DISTINCTLY different color family. Not "warm orange vs warm red" — more like "cool teal vs warm terracotta vs monochrome black".
+- **Interior/living room images**: NEVER generate more than 2 per batch. Past experience: similar-toned living room images were mass-rejected.
+- **Same category clustering**: If generating multiple food images, vary cuisine, plating style, background surface, and lighting dramatically.
+- **Variation axes to force diversity**: For each image, consciously vary at least 3 of these: color palette, composition style, lighting type, subject matter, art style.
+
+## WAXY/PLASTIC TEXTURE PREVENTION (from real rejection experience)
+AI upscaling (Real-ESRGAN) can make complex details look waxy, plastic, or watercolor-smudged. This causes quality rejections on Adobe Stock.
+- **Avoid filling the frame with complex detail**: dense foliage, intricate fabric patterns, macro skin texture, many small objects
+- **Use shallow depth of field**: blurred backgrounds reduce AI processing errors dramatically
+- **Keep backgrounds simple**: solid colors, concrete, sky, fabric, smooth surfaces
+- **For photos with people**: avoid extreme close-ups of faces/skin. Mid-shot or wider is safer.
+- **Include in photo prompts**: "shallow depth of field, soft blurred background" to give the upscaler less complex area to process
+
+## COPY SPACE STRATEGY (increases commercial value)
+Designers buy stock images to overlay text. Images with intentional copy space sell significantly more.
+- Vary copy space position across the batch:
+  - **Left-aligned**: subject on right, empty space on left for text
+  - **Right-aligned**: subject on left, empty space on right
+  - **Top banner**: subject in lower 2/3, clean sky/background on top
+  - **Centered hero**: subject in center with clean margins around it
+- At least 40% of images in each batch should have clear, usable copy space
+- Copy space should be CLEAN — not cluttered with small details that make text hard to read
 
 ## GOOGLE IMAGEFX SAFETY FILTER — MUST AVOID
 Known triggers to avoid:
