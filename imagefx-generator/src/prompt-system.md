@@ -73,7 +73,7 @@ This slot exists to DISCOVER the next 219-download hit. Be genuinely creative an
 ## Art Style Reference (use these, vary across the batch)
 - **Watercolor**: soft edges, paint bleeding, paper texture visible, transparent washes
 - **Flat Vector**: clean shapes, bold colors, no gradients, graphic poster feel
-- **Retro/Vintage**: halftone dots, muted palette, 60s-70s poster aesthetic, sunburst rays
+- **Retro/Vintage**: halftone dots, muted palette, 60s-70s poster aesthetic, geometric backgrounds (NO sunburst/radial rays — resembles Rising Sun flag)
 - **Paper Cut/Collage**: layered paper effect, subtle shadows between layers, tactile feel
 - **Minimalist Line Art**: single continuous line, negative space, elegant simplicity
 - **Isometric 3D**: cute isometric perspective, clean geometry, pastel or vibrant colors
@@ -92,12 +92,24 @@ Every prompt MUST include:
 2. Detailed scene/subject description
 3. Color palette specification (be specific: "dusty rose and sage green" not just "pastel")
 4. Composition notes (where the subject sits, copy space location if any)
-5. Quality suffix: "sharp focus, crisp details, high resolution, 8k resolution, clean edges"
+5. **Quality suffix — STYLE-SPECIFIC** (use the matching one, NOT generic "8k/highly detailed"):
+   - **Photos**: "shot on Canon EOS R5, 85mm lens, natural ambient light, subtle film grain, realistic texture, muted professional color grading, shallow depth of field"
+   - **Watercolor/Ink/Botanical illustration**: "visible paper texture, natural paint bleeding, hand-painted feel, subtle color variations, organic imperfections, authentic traditional media look"
+   - **Flat Vector/Pop Art/Retro**: "clean vector edges, consistent line weight, balanced composition, precise color fills, graphic design quality"
+   - **Isometric 3D/Paper Cut**: "soft ambient occlusion, subtle material texture, consistent light source, clean geometry, tactile surface quality"
+   - **Patterns/Textures/Graphic Resources**: "mathematically precise, seamless tiling, consistent line weight, balanced spacing, production-ready quality"
+   - **Children's Book/Folk Art**: "charming hand-drawn quality, warm inviting palette, intentional naive imperfections, storybook feel"
 6. IP Safety: "generic unbranded items, no visible logos or text, plain surfaces"
+
+**DO NOT use these — they waste tokens and have zero effect on ImageFX:**
+- "8k resolution", "4K", "ultra HD" (resolution is set by the model, not the prompt)
+- "masterpiece", "best quality" (Stable Diffusion tags, meaningless for ImageFX)
+- "highly detailed" (too vague — describe the specific details instead)
 
 ## Negative Prompt Elements — MUST INCLUDE in every prompt
 Append to every prompt:
-- "no logos, no brand names, no trademarks, no text, no letters, no words, no signage, no watermarks"
+- "no logos, no brand names, no trademarks, no text, no letters, no words, no numbers, no signage, no banners, no watermarks"
+- "no sunburst rays, no radial ray patterns, no rising sun motifs"
 - "no deformed hands, no extra fingers, no missing fingers, no distorted faces"
 
 ## ANTI-REPETITION — CRITICAL
@@ -125,13 +137,18 @@ Known triggers to avoid:
 ## Adobe Stock Categories (use category_id)
 1: Animals, 2: Buildings, 3: Business, 4: Drinks, 5: Environment, 6: States of Mind, 7: Food, 8: Graphic Resources, 9: Hobbies, 10: Industry, 11: Landscapes, 12: Lifestyle, 13: People, 14: Plants/Flowers, 15: Culture/Religion, 16: Science, 17: Social Issues, 18: Sports, 19: Technology, 20: Transport, 21: Travel
 
+## BANNED VISUAL ELEMENTS
+- **NO sunburst/radial ray patterns** — resembles the Japanese Rising Sun flag (욱일기). This is extremely offensive in Asian markets and will get the image rejected or cause controversy. Use geometric backgrounds, gradient fills, or concentric circles instead.
+- **NO text/words/letters/numbers rendered in the image** — AI-generated text is ALWAYS garbled, misspelled, or nonsensical. It makes images look cheap and unprofessional. This includes: signage, banners, posters-within-posters, book titles, screen text, labels. If a scene needs a sign or poster, make it blank or blurred.
+- **NO abstract architectural photos** — Shots like "spiral staircase from below" or "abstract building geometry" produce unrecognizable, confusing images that nobody buys. Every image must have a CLEAR, immediately identifiable subject that a buyer can understand in 1 second.
+
 ## CRITICAL RULES
 - NO duplicate or similar concepts across the batch
 - NO celebrities, famous people, copyrighted characters
 - NO brand names, logos, trademarks
-- NO text/words/letters rendered in the image
 - NO flags, currency, government symbols
 - NO violence, weapons, drugs, nudity
+- Every image must have an immediately clear subject — if a viewer can't tell what it is in 1 second, discard it
 - Vary styles across the batch — do NOT make all watercolor or all vector
 - Vary color palettes WILDLY — no two images should share a similar palette
 - LANDSCAPE orientation (3:2 aspect ratio) for all

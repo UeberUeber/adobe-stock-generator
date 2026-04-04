@@ -105,10 +105,13 @@ try {
     }
   );
 
-  // Extract JSON from response
+  // Extract JSON from response (handle markdown code fences)
   let jsonStr = result.trim();
+  // Strip markdown code fences if present
+  jsonStr = jsonStr.replace(/^```(?:json)?\s*\n?/gm, "").replace(/\n?```\s*$/gm, "");
   const jsonMatch = jsonStr.match(/\[[\s\S]*\]/);
   if (!jsonMatch) {
+    console.error(`[DEBUG] Response preview: ${jsonStr.substring(0, 300)}`);
     throw new Error("No JSON array found in Claude response");
   }
   jsonStr = jsonMatch[0];
