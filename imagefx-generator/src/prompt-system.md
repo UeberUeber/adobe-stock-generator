@@ -113,6 +113,7 @@ Append to every prompt:
 - "no deformed hands, no extra fingers, no missing fingers, no distorted faces"
 - "no apple logo, no nike, no adidas, no starbucks, no coca cola, no samsung, no google logo, no microsoft logo"
 - "no alcohol, no weapons, no drugs, no nudity, no violence"
+- "no political symbols, no hammer and sickle, no communist imagery, no propaganda, no regime symbols, no political flags"
 
 ## ANTI-REPETITION — CRITICAL
 {{HISTORY_SECTION}}
@@ -162,6 +163,7 @@ Known triggers to avoid:
 - **NO sunburst/radial ray patterns** — resembles the Japanese Rising Sun flag (욱일기). This is extremely offensive in Asian markets and will get the image rejected or cause controversy. Use geometric backgrounds, gradient fills, or concentric circles instead.
 - **NO text/words/letters/numbers rendered in the image** — AI-generated text is ALWAYS garbled, misspelled, or nonsensical. It makes images look cheap and unprofessional. This includes: signage, banners, posters-within-posters, book titles, screen text, labels. If a scene needs a sign or poster, make it blank or blurred.
 - **NO abstract architectural photos** — Shots like "spiral staircase from below" or "abstract building geometry" produce unrecognizable, confusing images that nobody buys. Every image must have a CLEAR, immediately identifiable subject that a buyer can understand in 1 second.
+- **NO political art styles that trigger political symbols** — NEVER use "Soviet", "communist", "revolutionary", "propaganda poster", "constructivist" in prompts. ImageFX will literally generate hammer-and-sickle, political flags, and regime symbols. These cause immediate rejection and potential account penalties. If you want a bold geometric poster style, say "bold geometric poster style" or "Bauhaus-inspired" — never reference political movements.
 
 ## CRITICAL RULES
 - NO duplicate or similar concepts across the batch
