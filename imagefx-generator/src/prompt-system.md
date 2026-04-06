@@ -83,6 +83,52 @@ This slot exists to DISCOVER the next 219-download hit. Be genuinely creative an
 - **Pop Art**: bold outlines, Ben-Day dots, saturated primary colors, Warhol/Lichtenstein influence
 - **Geometric Abstract**: mathematical patterns, sacred geometry, tessellations
 
+## Variation Options (use these to force diversity across the batch)
+
+### Lighting (pick a DIFFERENT one for each image)
+- Natural Sunlight — outdoor, soft shadows
+- Studio Lighting — controlled, even, professional
+- Golden Hour — warm, long shadows, orange tint
+- Dramatic High Contrast — deep shadows, bright highlights
+- Neon/Cyberpunk — electric colors, dark background
+- Soft Diffused — overcast, gentle, no harsh shadows
+- Rembrandt — single source, triangle shadow on cheek
+- Backlit/Silhouette — subject against bright background
+- Candlelight/Warm Ambient — intimate, low light, warm tones
+
+### Composition (pick a DIFFERENT one for each image)
+- Centered — subject dead center, symmetrical
+- Rule of Thirds — subject at intersection points
+- Negative Space — large empty area, subject small
+- Knolling/Flat Lay — objects arranged top-down
+- Macro/Close-up — extreme detail of small subject
+- Symmetrical — mirror balance left/right
+- Dynamic Diagonal — subject along diagonal line
+- Bird's Eye/Overhead — looking straight down
+- Low Angle — looking up at subject
+
+### Color Palette (pick a DIFFERENT one for each image)
+- Vibrant & Saturated — bold, high chroma
+- Pastel & Soft — low saturation, light tones
+- Earth Tones — browns, greens, warm neutrals
+- Monochromatic — single hue, varied shades
+- Dark with Neon Accents — black base, electric pops
+- Bold Contrast — complementary colors, high tension
+- Muted Vintage — desaturated, film-like
+- Warm Cozy — ambers, burgundy, cream
+- Cool & Clinical — blues, grays, whites
+
+### Trend Prefixes (for exploration slot — rotate these)
+- Surreal dreamlike, floating elements
+- Retrofuturistic, vintage meets modern
+- Cyberpunk neon, futuristic urban
+- Zen minimalist, calm, serene
+- Dynamic action, motion energy
+- Cottagecore, pastoral, handmade
+- Afrofuturism, cultural + sci-fi
+- Dark academia, scholarly, gothic
+- Y2K revival, early 2000s nostalgia
+
 ## Prompt Construction Rules
 Every prompt MUST include:
 1. **Style prefix** (critical — this determines the look):
@@ -108,12 +154,15 @@ Every prompt MUST include:
 
 ## Negative Prompt Elements — MUST INCLUDE in every prompt
 Append to every prompt:
-- "no logos, no brand names, no trademarks, no text, no letters, no words, no numbers, no signage, no banners, no watermarks"
+- "no logos, no brand names, no trademarks, no company logos, no text, no letters, no words, no writing, no numbers, no signage, no banners, no watermarks, no stamps, no emblems, no symbols"
 - "no sunburst rays, no radial ray patterns, no rising sun motifs"
-- "no deformed hands, no extra fingers, no missing fingers, no distorted faces"
-- "no apple logo, no nike, no adidas, no starbucks, no coca cola, no samsung, no google logo, no microsoft logo"
-- "no alcohol, no weapons, no drugs, no nudity, no violence"
+- "no deformed hands, no extra fingers, no missing fingers, no malformed limbs, no distorted faces, no asymmetric eyes"
+- "no blurry, no pixelated, no grainy, no noise, no artifacts, no glitches, no compression artifacts"
+- "no apple logo, no macbook, no iphone, no ipad, no microsoft logo, no windows logo, no google logo, no samsung, no dell, no hp logo, no lenovo, no nike swoosh, no adidas, no coca cola, no starbucks"
+- "no celebrities, no famous people, no politicians, no copyrighted characters, no fictional characters"
+- "no alcohol, no weapons, no drugs, no nudity, no suggestive content, no violence"
 - "no political symbols, no hammer and sickle, no communist imagery, no propaganda, no regime symbols, no political flags"
+- "no flags, no currency, no government symbols"
 
 ## ANTI-REPETITION — CRITICAL
 {{HISTORY_SECTION}}
